@@ -1,38 +1,45 @@
-
 pipeline {
-        agent {
-            node {label 'host'}
-        }
-
-	  triggers {
-                    pollSCM('* * * * *')
-                    }
+    
+    agent {label 'host'}
         
-          stages {
+    
+    tools { gradle 'gradle_8.6'
+            }
 
-					 stage("Test login service") {
-                        steps { 
-                            sh "./gradlew login-service:test"
-                          }
-                        steps { 
-                            sh "./gradlew login-service:intTest"
-                          }
-                    }
+    triggers {
+                pollSCM('* * * * *')
+            }
+    
+    stages {
 
+		 stage("Stop all containers") {
+            steps { 
+                 sh "docker compose down"
+              }
+            }
 					
-                    stage("Build login service") {
-                        steps { 
-                            sh "./gradlew login-service:build"
-                          }
-                        }
-                                                          
+		 stage("Test admin service") {
+            steps { 
+                sh "gradle admin-service:test"
+				sh "gradle admin-service:intTest"
+              }                       
+        }
                                       
-                                      
-                                      
-                   }  
-           post { 
-		        always { 
-		             sh "docker compose up -d"
-		        }
-    }                 
+        stage("Build admin service") {
+            steps { 
+                sh "gradle admin-service:build"
+              }
+            }       
+           } 
+   post { 
+        always { 
+             sh "docker compose up -d"
+        } 
+        success {
+            echo 'Successfully!'
+        } 
+        failure {
+            echo 'Failed!'
+        }
+	}                 
 }

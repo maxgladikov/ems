@@ -1,9 +1,29 @@
 version: '3.8'
 
 services:
-
+  
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: ems.zookeeper
+    ports:
+    - "2181:2181"
+    networks:
+      - backend
+  
+  kafka:
+    image: wurstmeister/kafka
+    container_name: ems.kafka
+    ports:
+    - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+    networks:
+      - backend
+  
   admin-service:
-    image: "aston/ems.admin_service:latest"
+    image: "aston/ems.admin-service:latest"
     pull_policy: never
     container_name: ems.admin_service
     ports:
@@ -14,7 +34,7 @@ services:
 
   admin-db:
     image: postgres:15.4
-    pull_policy: never
+    #pull_policy: never
     container_name: ems.admin-db
     restart: always
     environment:
