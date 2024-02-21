@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+
+  admin-service:
+    image: "aston/ems.admin_service:latest"
+    pull_policy: never
+    container_name: ems.admin_service
+    ports:
+      - '9000:9000'
+    networks:
+      - backend
+      - admin
+
+  admin-db:
+    image: postgres:15.4
+    pull_policy: never
+    container_name: ems.admin-db
+    restart: always
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pas
+      TZ: "Asia/Yekaterinburg"
+      PGTZ:  "Asia/Yekaterinburg"
+    networks:
+      - admin
+    ports:
+      - '5432:5432'
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+  
+  
+          
+          
+networks:
+  backend:
+    driver: bridge
+  admin:
+    driver: bridge
+  frontend:
+    driver: bridge

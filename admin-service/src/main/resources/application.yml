@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: login_service
+
+server:
+    port: 9000
+
+logging:
+  level:
+    root: INFO
+    org.springframework : INFO
