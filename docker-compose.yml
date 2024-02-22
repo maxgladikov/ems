@@ -105,6 +105,7 @@ services:
       - admin
     depends_on:
       - elasticsearch   
+      - logstash   
       - kafka   
       - admin-db   
 
