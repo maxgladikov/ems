@@ -112,7 +112,7 @@ subprojects {
 	jib {
 		var tag = "latest"
 		from {
-		  image = "eclipse-temurin:17.0.8.1_1-jre-ubi9-minimal"	  
+		  image = "eclipse-temurin:17.0.10_7-jre-jammy"	  
 		  platforms{
 			  platform {
 				  architecture = 'amd64' // 'arm64'
@@ -130,8 +130,8 @@ subprojects {
 			jvmFlags = [
 					  	"-server",
 						"-Duser.timezone=UTC",
-						"-Xms128m",
-						"-Xmx500m"
+						"-Xms256m",
+						"-Xmx512m"
 						]
 			creationTime = Instant.now().toString()
 			format = com.google.cloud.tools.jib.api.buildplan.ImageFormat.OCI

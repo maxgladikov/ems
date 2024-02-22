@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  
+
   zookeeper:
     image: wurstmeister/zookeeper
     container_name: ems.zookeeper
@@ -21,16 +21,10 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
     networks:
       - backend
+    depends_on:
+      - zookeeper    
   
-  admin-service:
-    image: "aston/ems.admin-service:latest"
-    pull_policy: never
-    container_name: ems.admin_service
-    ports:
-      - '9000:9000'
-    networks:
-      - backend
-      - admin
+ 
 
   admin-db:
     image: postgres:15.4
@@ -53,9 +47,71 @@ services:
           cpus: '1'
           memory: 1G
   
+  elasticsearch:
+    image: elasticsearch:8.3.3
+    container_name: ems.elasticsearch
+    restart: always
+    ports:
+      - "9200:9200"
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+    networks:
+      - backend
   
-          
-          
+  logstash:
+    image: logstash:8.3.3
+    container_name: ems.logstash
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    volumes:
+      - ./configurations/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./configurations/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+    environment:
+      - "LS_JAVA_OPTS=-Xms256m -Xmx256m"
+    networks:
+      - backend
+    depends_on:
+      - elasticsearch    
+  
+  kibana:
+    image: kibana:8.3.3
+    container_name: ems.kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+    networks:
+      - backend
+    depends_on:
+      - elasticsearch      
+  
+  admin-service:
+    image: "aston/ems.admin-service:latest"
+    pull_policy: never
+    container_name: ems.admin_service
+    ports:
+      - '9000:9000'
+    volumes:
+      - ems_logs:/app/logs
+    networks:
+      - backend
+      - admin
+    depends_on:
+      - elasticsearch   
+      - kafka   
+      - admin-db   
+
+volumes:
+  ems_logs:
+     driver: local  
+                     
 networks:
   backend:
     driver: bridge
@@ -63,3 +119,7 @@ networks:
     driver: bridge
   frontend:
     driver: bridge
+  elk:
+    driver: bridge
+  
+ 
