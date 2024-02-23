@@ -98,6 +98,12 @@ services:
     container_name: ems.admin_service
     ports:
       - '9000:9000'
+    healthcheck:
+     test: "curl --fail --silent localhost:9000/actuator/health/readiness | grep UP || exit 1"
+     interval: 2s
+     timeout: 3s
+     retries: 2
+     start_period: 20s
     volumes:
       - ems_logs:/app/logs
     networks:
