@@ -18,7 +18,7 @@ public class Application {
 			.route("limit_route", r -> r
 				.host("localhost:8000").and().path("/**")
 //				.filters(f -> f.requestRateLimiter(c -> c.setRateLimiter(redisRateLimiter())))
-				.uri("http://admin-service:9001/api/v1/"))
+				.uri("http://admin-service:9000/api/v1/"))
 			.build();
 	}
 	
