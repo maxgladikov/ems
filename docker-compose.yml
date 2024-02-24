@@ -24,29 +24,6 @@ services:
     depends_on:
       - zookeeper    
   
- 
-
-  admin-db:
-    image: postgres:15.4
-    #pull_policy: never
-    container_name: ems.admin-db
-    restart: always
-    environment:
-      POSTGRES_DB: test
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pas
-      TZ: "Asia/Yekaterinburg"
-      PGTZ:  "Asia/Yekaterinburg"
-    networks:
-      - admin
-    ports:
-      - '5432:5432'
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1G
-  
   elasticsearch:
     image: elasticsearch:8.3.3
     container_name: ems.elasticsearch
@@ -92,6 +69,27 @@ services:
     depends_on:
       - elasticsearch      
   
+  admin-db:
+      image: postgres:15.4
+      #pull_policy: never
+      container_name: ems.admin-db
+      restart: always
+      environment:
+        POSTGRES_DB: test
+        POSTGRES_USER: user
+        POSTGRES_PASSWORD: pas
+        TZ: "Asia/Yekaterinburg"
+        PGTZ:  "Asia/Yekaterinburg"
+      networks:
+        - admin
+      ports:
+        - '5432:5432'
+      deploy:
+        resources:
+          limits:
+            cpus: '1'
+            memory: 1G
+
   admin-service:
     image: "aston/ems.admin-service:latest"
     pull_policy: never
@@ -113,7 +111,29 @@ services:
       - elasticsearch   
       - logstash   
       - kafka   
-      - admin-db   
+      - admin-db
+   gateway:
+    image: "aston/ems.gateway-service:latest"
+    pull_policy: never
+    container_name: ems.gateway
+    ports:
+      - '8000:8000'
+    healthcheck:
+     test: "curl --fail --silent localhost:9000/actuator/health/readiness | grep UP || exit 1"
+     interval: 2s
+     timeout: 3s
+     retries: 2
+     start_period: 20s
+    volumes:
+      - ems_logs:/app/logs
+    networks:
+      - backend
+      - admin
+    depends_on:
+      - elasticsearch   
+      - logstash   
+      - kafka   
+      - admin-db      
 
 volumes:
   ems_logs:
