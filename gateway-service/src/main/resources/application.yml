@@ -3,15 +3,15 @@ spring:
     web-application-type: REACTIVE
   application:
     name: gateway-service
-  # cloud:
-  #   gateway:
-  #     routes:
-  #     - id: admin-service
-  #       uri: http://localhost:9000
-  #       predicates:
-  #         - Path=/api/v1/**
-  #       filters:
-     
+  cloud:
+   gateway:
+     routes:
+     - id: admin-service
+       uri: http://admin-service:9000
+       predicates:
+         - Path=/admin/**
+       filters:
+          - StripPrefix=1
 
 server:
     port: 8000
@@ -20,6 +20,7 @@ logging:
   level:
     root: INFO
     '[org.springframework]' : INFO
+    '[org.springframework.cloud]' : INFO
     '[org.aston.ems]' : DEBUG
 
 management:
