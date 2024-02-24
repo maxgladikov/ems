@@ -5,13 +5,27 @@ spring:
     name: gateway-service
   cloud:
    gateway:
+     default-filters:
+        - StripPrefix=1
+        - AddRequestHeader=proxied, true
      routes:
      - id: admin-service
        uri: http://admin-service:9000
        predicates:
          - Path=/admin/**
-       filters:
-          - StripPrefix=1
+     - id: student-service
+       uri: http://student-service:9001
+       predicates:
+         - Path=/student/**
+     - id: teacher-service
+       uri: http://teacher-service:9002
+       predicates:
+         - Path=/teacher/**
+     - id: user-service
+       uri: http://user-service:9003
+       predicates:
+         - Path=/user/**
+     
 
 server:
     port: 8000
