@@ -1,13 +1,12 @@
 plugins {
   id 'java'
-  id 'org.springframework.boot' version '3.2.2'
+  id 'org.springframework.boot' version '3.2.3'
   id 'io.spring.dependency-management' version '1.1.4'
   id 'com.google.cloud.tools.jib' version '3.4.0'
 }
 
 ext { 
-		springCloudVersion = "2022.0.4"
-		mapstructVersion = "1.5.5.Final"
+		springCloudVersion = "2023.0.0"
 		lombokVersion = "1.18.28"
 		jacocoVersion = "0.8.7"
 		jUnitVersion='5.10.2'
@@ -16,15 +15,10 @@ ext {
 
 version = '0.0.1'
 
-def springProjects=[project(':student-service'), project(':teacher-service'), project(':user-service'),project(':admin-service')]
+def springProjects=[project(':student-service'), project(':teacher-service'), project(':user-service'),project(':admin-service'),project(':gateway-service')]
 def libraryProjects=[project(':common-lib')]
 
-bootJar {
-		enabled = false
-	}
-
-
-
+bootJar.enabled = false
 
 allprojects {
 	apply plugin: 'eclipse'
@@ -61,12 +55,14 @@ configure(springProjects){
 	
 	dependencies {
 		  implementation 'org.springframework.boot:spring-boot-configuration-processor'
+		  implementation 'org.springframework.boot:spring-boot-starter-actuator'
 		  //implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 		  implementation 'org.springframework.boot:spring-boot-starter-web'
 		  //implementation 'org.liquibase:liquibase-core'
 		  compileOnly 'org.projectlombok:lombok'
 		  annotationProcessor 'org.projectlombok:lombok'
   		  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  		  implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 	}
 	
 	bootJar {
@@ -144,6 +140,12 @@ configure(springProjects){
 	  }
 	  
 	  build.dependsOn jibDockerBuild
+	  
+	  dependencyManagement {
+		  imports {
+		    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		  }
+	}
 }
 
 configure(libraryProjects){
