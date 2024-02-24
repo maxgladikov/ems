@@ -1,6 +1,7 @@
 package org.aston.ems.user_service;
 
 
+import org.aston.ems.user_service.dto.UserDTO;
 import org.aston.ems.user_service.service.CustomDigitComparator;
 import org.aston.ems.user_service.service.CustomDigitComparatorReverse;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,52 +16,59 @@ class CustomDigitComparatorTest {
 
     CustomDigitComparator naturalComparatorCase;
     CustomDigitComparatorReverse reverseComparatorCase;
-    List<Integer> list;
+
+    List<UserDTO> listDTONaturelOrder, listDTOReverseOrder, listDTO;
     @BeforeEach
     void setUp() {
         naturalComparatorCase = new CustomDigitComparator();
         reverseComparatorCase = new CustomDigitComparatorReverse();
-        list = new ArrayList<>();
-        list.add(2);
-        list.add(4);
-        list.add(1);
-        list.add(3);
+
+        listDTONaturelOrder = new ArrayList<>();
+        listDTONaturelOrder.add(new UserDTO("name5", 1));
+        listDTONaturelOrder.add(new UserDTO("name2", 8));
+        listDTONaturelOrder.add(new UserDTO("name3", 10));
+        listDTONaturelOrder.add(new UserDTO("name4", 15));
+        listDTONaturelOrder.add(new UserDTO("name1", 20));
+
+        listDTOReverseOrder = new ArrayList<>();
+        listDTOReverseOrder.add(new UserDTO("name1", 20));
+        listDTOReverseOrder.add(new UserDTO("name4", 15));
+        listDTOReverseOrder.add(new UserDTO("name3", 10));
+        listDTOReverseOrder.add(new UserDTO("name2", 8));
+        listDTOReverseOrder.add(new UserDTO("name5", 1));
+
+        listDTO = new ArrayList<>();
+        listDTO.add(new UserDTO("name1", 20));
+        listDTO.add(new UserDTO("name2", 8));
+        listDTO.add(new UserDTO("name3", 10));
+        listDTO.add(new UserDTO("name4", 15));
+        listDTO.add(new UserDTO("name5", 1));
     }
 
     @Test
     void compareNaturelOrder() {
 
-        list.sort(naturalComparatorCase);
+        listDTO.sort(naturalComparatorCase);
+        System.out.println("listDTONaturelOrder UserDTO=" + listDTO);
 
-        List<Integer> testArray = new ArrayList<>();
-        testArray.add(1);
-        testArray.add(2);
-        testArray.add(3);
-        testArray.add(4);
+        assertEquals(listDTONaturelOrder, listDTO);
 
-        assertEquals(testArray, list);
+        assertEquals(1, naturalComparatorCase.compare(new UserDTO("name1", 20), new UserDTO("name2", 8)));
+        assertEquals(-1, naturalComparatorCase.compare(new UserDTO("name2", 8), new UserDTO("name1", 20)));
+        assertEquals(0, naturalComparatorCase.compare(new UserDTO("name2", 8), new UserDTO("name2", 8)));
+}
 
-        assertEquals(-1, naturalComparatorCase.compare(1, 2));
-        assertEquals(1, naturalComparatorCase.compare(2, 1));
-        assertEquals(0, naturalComparatorCase.compare(2, 2));
-    }
-
-    @Test
+@Test
     void compareReverseOrder() {
 
-        list.sort(reverseComparatorCase);
+        listDTO.sort(reverseComparatorCase);
+        System.out.println("listDTOReverseOrder UserDTO=" + listDTO);
 
-        List<Integer> testArray = new ArrayList<>();
-        testArray.add(4);
-        testArray.add(3);
-        testArray.add(2);
-        testArray.add(1);
+        assertEquals(listDTOReverseOrder, listDTO);
 
-        assertEquals(testArray, list);
-
-        assertEquals(1, reverseComparatorCase.compare(1, 2));
-        assertEquals(-1, reverseComparatorCase.compare(2, 1));
-        assertEquals(0, reverseComparatorCase.compare(2, 2));
+        assertEquals(-1, reverseComparatorCase.compare(new UserDTO("name1", 20), new UserDTO("name2", 8)));
+        assertEquals(1, reverseComparatorCase.compare(new UserDTO("name2", 8), new UserDTO("name1", 20)));
+        assertEquals(0, reverseComparatorCase.compare(new UserDTO("name2", 8), new UserDTO("name2", 8)));
     }
 
 
