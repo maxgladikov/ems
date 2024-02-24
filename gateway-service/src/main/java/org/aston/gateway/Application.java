@@ -16,7 +16,7 @@ public class Application {
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 		return builder.routes()
 			.route("limit_route", r -> r
-				.host("localhost:8000").and().path("/**")
+				.path("/admin/")
 //				.filters(f -> f.requestRateLimiter(c -> c.setRateLimiter(redisRateLimiter())))
 				.uri("http://admin-service:9000/api/v1/"))
 			.build();
