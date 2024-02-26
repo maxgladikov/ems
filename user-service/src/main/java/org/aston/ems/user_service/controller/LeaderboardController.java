@@ -16,45 +16,34 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/v1/leaderboard", produces = "application/json")
 public class LeaderboardController {
-    private List<UserDTO> leaders;
     private final String URI = "http://localhost:9002/api/v1/student/task"; //Заменить на endpoint когда он будет написан
-    private RestTemplate template = new RestTemplate();
+    private final RestTemplate template = new RestTemplate();
 
     @GetMapping("/top")
     public List<UserDTO> getRatingBestStudent() throws JsonProcessingException {
-
-        CustomDigitComparatorReverse comparatorLeader = new CustomDigitComparatorReverse();
-        leaders = new ArrayList<>();
-
-        String jsonListStudent = template.getForObject(URI, String.class);
-        ObjectMapper objectMapper = new ObjectMapper();
-        leaders = objectMapper.readValue(jsonListStudent, new TypeReference<>(){});
-
-        leaders.sort(comparatorLeader);
-        leaders = leaders.subList(0,3);
-
-        return leaders;
+        return getRatingStudent(new ArrayList<>(), new CustomDigitComparatorReverse());
     }
 
     @GetMapping("/antitop")
-    public List<UserDTO> getRatingWorstStudent() throws JsonProcessingException {
+    public List<UserDTO> getRatingWorstStudent() {
+        return getRatingStudent(new ArrayList<>(), new CustomDigitComparator());
+    }
 
-        CustomDigitComparator comparatorWorst = new CustomDigitComparator();
-        leaders = new ArrayList<>();
+    @SneakyThrows
+    private List<UserDTO> getRatingStudent(List<UserDTO> list, Comparator<UserDTO> comparator) {
 
         String jsonListStudent = template.getForObject(URI, String.class);
         ObjectMapper objectMapper = new ObjectMapper();
-        leaders = objectMapper.readValue(jsonListStudent, new TypeReference<>(){});
+        list = objectMapper.readValue(jsonListStudent, new TypeReference<>(){});
 
-        leaders.sort(comparatorWorst);
-        leaders = leaders.subList(0,3);
-
-        return leaders;
+        list.sort(comparator);
+        list = list.subList(0,3);
+        return list;
     }
-
 }

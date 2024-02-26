@@ -1,4 +1,4 @@
-package org.aston.ems.user_service;
+package org.aston.ems.user_service.service;
 
 
 import org.aston.ems.user_service.dto.UserDTO;
@@ -46,10 +46,10 @@ class CustomDigitComparatorTest {
     }
 
     @Test
-    void compareNaturelOrder() {
+    void compareNaturelOrderOfMark() {
 
         listDTO.sort(naturalComparatorCase);
-        System.out.println("listDTONaturelOrder UserDTO=" + listDTO);
+        System.out.println("listDTONaturelOrderOfMark UserDTO=" + listDTO);
 
         assertEquals(listDTONaturelOrder, listDTO);
 
@@ -59,10 +59,10 @@ class CustomDigitComparatorTest {
 }
 
 @Test
-    void compareReverseOrder() {
+    void compareReverseOrderOfMark() {
 
         listDTO.sort(reverseComparatorCase);
-        System.out.println("listDTOReverseOrder UserDTO=" + listDTO);
+        System.out.println("listDTOReverseOrderOfMark UserDTO=" + listDTO);
 
         assertEquals(listDTOReverseOrder, listDTO);
 
