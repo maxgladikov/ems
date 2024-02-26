@@ -9,3 +9,6 @@ logging:
   level:
     root: INFO
     org.springframework : INFO
+
+value:
+  URI: "http://localhost:9002/api/v1/student/task"
