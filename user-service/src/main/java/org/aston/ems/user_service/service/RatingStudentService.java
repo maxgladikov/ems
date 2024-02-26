@@ -8,17 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.Comparator;
 import java.util.List;
+
 @Service
 public class RatingStudentService {
     private String URI;
-
     private final RestTemplate template = new RestTemplate();
 
     public RatingStudentService() {}
 
-    public RatingStudentService(String uri) {
-        URI = uri;
-    }
+    public RatingStudentService(String uri) {URI = uri;}
 
     /**
      *
