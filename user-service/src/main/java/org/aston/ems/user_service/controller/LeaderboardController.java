@@ -5,7 +5,6 @@ import lombok.SneakyThrows;
 import org.aston.ems.user_service.dto.UserDTO;
 import org.aston.ems.user_service.service.CustomDigitComparator;
 import org.aston.ems.user_service.service.CustomDigitComparatorReverse;
-import org.aston.ems.user_service.service.RatingStudent;
 import org.aston.ems.user_service.service.RatingStudentService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,6 @@ public class LeaderboardController {
 
     @Value("${value.URI}")
     private String URI; //Заменить на endpoint когда он будет написан в application.yml
-
 
     @SneakyThrows
     @GetMapping("/top")
