@@ -1,7 +1,6 @@
 package org.aston.ems.user_service.controller;
 
 
-import org.aston.ems.user_service.service.CustomDigitComparatorReverse;
 import org.aston.ems.user_service.service.RatingStudentService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
