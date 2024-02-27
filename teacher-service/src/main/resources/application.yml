@@ -1,11 +1,12 @@
 spring:
   application:
-    name: login_service
+    name: admin_service
 
 server:
-    port: 9002
+  port: 9002
 
 logging:
   level:
     root: INFO
     org.springframework : INFO
+    org.aston.ems : DEBUG
