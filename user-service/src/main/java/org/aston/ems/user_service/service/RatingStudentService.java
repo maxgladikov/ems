@@ -13,14 +13,19 @@ import java.util.List;
 @Service
 public class RatingStudentService {
     private String URI;
-    @Autowired
-    private RestTemplate template;
+    private String jsonListStudent;
+
     @Autowired
     private ObjectMapper objectMapper;
 
     public RatingStudentService() {}
+
     public RatingStudentService(String uri) {
         URI = uri;
+    }
+    @Autowired
+    void setJsonListStudent(RestTemplate template) {
+        this.jsonListStudent  = template.getForObject(URI, String.class);
     }
 
     /**
@@ -36,14 +41,17 @@ public class RatingStudentService {
 
     public List<UserDTO> getRatingStudent(Comparator<UserDTO> comparator, int start, int end) throws JsonProcessingException {
 
-        String jsonListStudent = template.getForObject(URI, String.class);
-        List<UserDTO> list = objectMapper.readValue(jsonListStudent, new TypeReference<>(){});
+        List<UserDTO> list = getListUserDTOForParseJsonListStudent();
 
         list.sort(comparator);
 
         list = list.subList((ifFirstElementIsZero(start)-1), ifLastElementIsLargerSizeOfArray(list.size(),end));
 
         return list;
+    }
+
+    private List<UserDTO> getListUserDTOForParseJsonListStudent() throws JsonProcessingException {
+        return objectMapper.readValue(jsonListStudent, new TypeReference<>(){});
     }
 
     private int ifLastElementIsLargerSizeOfArray(int listSize, int end) {

@@ -92,27 +92,27 @@ services:
     depends_on:
       - elasticsearch      
 
-#  admin-service:
-#    image: "aston/ems.admin-service:latest"
-#    pull_policy: never
-#    container_name: ems.admin_service
-#    ports:
-#      - '9000:9000'
-#    volumes:
-#      - ems_logs:/app/logs
-#    networks:
-#      - backend
-#      - admin
-#    depends_on:
-#      - elasticsearch
-#      - logstash
-#      - kafka
-#      - admin-db
+  admin-service:
+    image: "aston/ems.admin-service:latest"
+    pull_policy: never
+    container_name: ems.admin_service
+    ports:
+      - '9000:9000'
+    volumes:
+      - ems_logs:/app/logs
+    networks:
+      - backend
+      - admin
+    depends_on:
+      - elasticsearch
+      - logstash
+      - kafka
+      - admin-db
 
   user-service:
     image: "aston/ems.user-service:latest"
     pull_policy: never
-    container_name: ems.admin_service
+    container_name: ems.user_service
     ports:
       - '9003:9003'
     volumes:
