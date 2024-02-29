@@ -23,13 +23,24 @@ public class RatingStudentService {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     *
+     * @param comparator accept a comparator for compiling a list
+     * @param start Starting position for output from the List (from which array element we start displaying)
+     * @param end The final position for output from the List, it also limits the number of output
+     * students in the List (we limit ourselves to which element of the array,
+     * the maximum number is equal to the number of array elements)
+     * @return Returns List<UserDTO> in JSON format
+     * @throws JsonProcessingException may throw an error when parsing a JSON object into a sheet
+     */
+
     public List<UserDTO> getRatingStudent(Comparator<UserDTO> comparator, int start, int end) throws JsonProcessingException {
 
         List<UserDTO> list = getListUserDTOForParseJsonListStudent();
 
         list.sort(comparator);
 
-        list = list.subList((ifFirstElementIsZero(start)-1), ifLastElementIsLargerSizeOfArray(list.size(),end));
+        list = list.subList((getStartIndex(start)-1), getSizeArrayIfLastElementIsLarger(list.size(),end));
 
         return list;
     }
@@ -37,14 +48,18 @@ public class RatingStudentService {
     private List<UserDTO> getListUserDTOForParseJsonListStudent() throws JsonProcessingException {
         return objectMapper.readValue(jsonListStudent, new TypeReference<>(){});
     }
-    private int ifLastElementIsLargerSizeOfArray(int listSize, int end) {
+    private int getSizeArrayIfLastElementIsLarger(int listSize, int end) {
 
-        if (listSize < end) end = listSize;
+        if (listSize < end) {
+            end = listSize;
+        }
         return end;
     }
-    private int ifFirstElementIsZero (int start) {
+    private int getStartIndex(int start) {
 
-        if (start == 0) start++;
+        if (start == 0) {
+            start++;
+        }
         return start;
     }
 }
