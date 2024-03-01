@@ -9,7 +9,7 @@ services:
     - "2181:2181"
     networks:
       - backend
-  
+
   kafka:
     image: wurstmeister/kafka
     container_name: ems.kafka
@@ -22,19 +22,40 @@ services:
     networks:
       - backend
     depends_on:
-      - zookeeper    
-  
- 
+      - zookeeper
 
-  admin-db:
+ 
+#
+#  admin-db:
+#    image: postgres:15.4
+#    #pull_policy: never
+#    container_name: ems.admin-db
+#    restart: always
+#    environment:
+#      POSTGRES_DB: test
+#      POSTGRES_USER: user
+#      POSTGRES_PASSWORD: pas
+#      TZ: "Asia/Yekaterinburg"
+#      PGTZ:  "Asia/Yekaterinburg"
+#    networks:
+#      - admin
+#    ports:
+#      - '5432:5432'
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1'
+#          memory: 1G
+
+  teacher-db:
     image: postgres:15.4
-    #pull_policy: never
-    container_name: ems.admin-db
+#    pull_policy: always
+    container_name: ems.teacher-db
     restart: always
     environment:
-      POSTGRES_DB: test
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pas
+      POSTGRES_DB: tasks
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       TZ: "Asia/Yekaterinburg"
       PGTZ:  "Asia/Yekaterinburg"
     networks:
@@ -77,8 +98,8 @@ services:
     networks:
       - backend
     depends_on:
-      - elasticsearch    
-  
+      - elasticsearch
+
   kibana:
     image: kibana:8.3.3
     container_name: ems.kibana
@@ -90,7 +111,7 @@ services:
     networks:
       - backend
     depends_on:
-      - elasticsearch      
+      - elasticsearch
 
 
 #  admin-service:
@@ -115,6 +136,8 @@ services:
     image: "aston/ems.teacher-service:latest"
     pull_policy: never
     container_name: ems.teacher_service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://teacher-db:5432/tasks?currentSchema=app
     ports:
       - '9002:9002'
     volumes:
@@ -123,15 +146,15 @@ services:
       - backend
       - admin
     depends_on:
-      - elasticsearch   
-      - logstash   
-      - kafka   
-      - admin-db   
+      - elasticsearch
+      - logstash
+      - kafka
+      - teacher-db
 
 volumes:
   ems_logs:
-     driver: local  
-                     
+     driver: local
+
 networks:
   backend:
     driver: bridge
