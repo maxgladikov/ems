@@ -3,6 +3,7 @@ package org.aston.ems.user_service.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import org.aston.ems.user_service.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,14 +14,19 @@ import java.util.List;
 @Service
 public class RatingStudentService {
     private String jsonListStudent;
-    @Autowired
     private ObjectMapper objectMapper;
-
+    private String URI;
+    private RestTemplate restTemplate;
     public RatingStudentService() {}
     @Autowired
     public RatingStudentService(String URI, RestTemplate restTemplate, ObjectMapper objectMapper) {
-        this.jsonListStudent  = restTemplate.getForObject(URI, String.class);
+        this.URI = URI;
         this.objectMapper = objectMapper;
+        this.restTemplate = restTemplate;
+    }
+    @PostConstruct
+    public void init() {
+        this.jsonListStudent  = restTemplate.getForObject(URI, String.class);
     }
 
     /**
