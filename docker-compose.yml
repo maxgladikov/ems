@@ -141,7 +141,7 @@ services:
     pull_policy: never
     container_name: ems.student-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://student-db:5001/student
+      SPRING_DATASOURCE_URL: jdbc:postgresql://student-db:5432/student
     ports:
       - '9001:9001'
     volumes:
