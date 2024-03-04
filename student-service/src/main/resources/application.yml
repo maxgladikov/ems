@@ -1,11 +1,14 @@
 spring:
+
   application:
     name: student-service
+
   datasource:
     url: jdbc:postgresql://localhost:5001/student
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
+
   jpa:
     show-sql: true
     hibernate:
@@ -13,6 +16,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  output:
+    ansi:
+      enabled: always
 
 server:
     port: 9001
