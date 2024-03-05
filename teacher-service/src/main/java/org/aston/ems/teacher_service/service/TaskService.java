@@ -7,11 +7,13 @@ import org.aston.ems.teacher_service.dao.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService implements ITaskService {
-    private static final String ILLEGAL_ARGUMENT_ERR_MSG = "Mark should be between 0 and 10";
+    private static final String ILLEGAL_ARGUMENT_ERR_MSG = "Mark should be between 0 and 5";
     private final ITaskRepository repository;
     private final ITaskMapper mapper;
 
@@ -22,28 +24,34 @@ public class TaskService implements ITaskService {
     }
 
     public void save(TaskDto taskDto) {
-        this.repository.save(this.mapper.toEntity(taskDto));
+        repository.save(mapper.toEntity(taskDto));
     }
 
     public List<TaskDto> getAllTeachersTasks(long teacherId) {
-        List<Task> teachersTasks = this.repository.getAllById(teacherId);
-        return this.mapper.toDTOList(teachersTasks);
+        List<Task> teachersTasks = repository.getAllByTeacherId(teacherId);
+        return toDTOList(teachersTasks);
     }
 
     public void delete(long id) {
-        Task task = (Task)this.repository.getReferenceById(id);
-        this.repository.delete(task);
+        Task task = repository.getReferenceById(id);
+        repository.delete(task);
     }
 
     public void update(long id, int mark) {
         if (mark >= 0 && mark <= 5) {
-            Task task = (Task)this.repository.getReferenceById(id);
+            Task task = repository.getReferenceById(id);
             task.setMark(mark);
             task.setChecked(true);
-            this.repository.save(task);
+            repository.save(task);
         } else {
             throw new IllegalArgumentException(ILLEGAL_ARGUMENT_ERR_MSG);
         }
+    }
+
+    private List<TaskDto> toDTOList(List<Task> tasks) {
+        return tasks.stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 }
 
