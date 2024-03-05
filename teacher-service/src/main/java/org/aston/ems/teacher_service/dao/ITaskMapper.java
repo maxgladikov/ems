@@ -13,8 +13,4 @@ public interface ITaskMapper {
     TaskDto toDTO(Task entity);
 
     void map(TaskDto dto, @MappingTarget Task entity);
-
-    List<TaskDto> toDTOList(List<Task> entityList);
-
-    List<Task> toEntityList(List<TaskDto> dtoList);
 }
