@@ -30,4 +30,16 @@ public class TeacherController {
 		List<TaskDto> tasks = taskService.getAllTeachersTasks(teacherId);
 		return new ResponseEntity<> (tasks, HttpStatus.OK);
 	}
+
+	@PutMapping
+	public ResponseEntity<?> update(@RequestBody TaskDto taskDto) {
+		taskService.update(taskDto.getId(), taskDto.getMark());
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
+	@DeleteMapping("/{taskId}")
+	public ResponseEntity<?> delete(@PathVariable long taskId) {
+		taskService.delete(taskId);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
 }

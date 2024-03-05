@@ -38,14 +38,10 @@ public class TaskService implements ITaskService {
     }
 
     public void update(long id, int mark) {
-        if (mark >= 0 && mark <= 5) {
-            Task task = repository.getReferenceById(id);
-            task.setMark(mark);
-            task.setChecked(true);
-            repository.save(task);
-        } else {
-            throw new IllegalArgumentException(ILLEGAL_ARGUMENT_ERR_MSG);
-        }
+        Task task = repository.getReferenceById(id);
+        task.setMark(mark);
+        task.setChecked(true);
+        repository.save(task);
     }
 
     private List<TaskDto> toDTOList(List<Task> tasks) {
