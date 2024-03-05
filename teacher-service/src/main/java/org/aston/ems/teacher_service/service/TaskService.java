@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class TaskService implements ITaskService {
-    private static final String ILLEGAL_ARGUMENT_ERR_MSG = "Mark should be between 0 and 5";
     private final ITaskRepository repository;
     private final ITaskMapper mapper;
 
