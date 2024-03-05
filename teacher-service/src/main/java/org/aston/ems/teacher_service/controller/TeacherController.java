@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping(path = {"/api/v1/teacher"}, produces = {"application/json"})
+@RequestMapping(path ="/api/v1/teacher", produces = "application/json")
 public class TeacherController {
 	private final ITaskService taskService;
 
@@ -17,11 +19,15 @@ public class TeacherController {
 		this.taskService = taskService;
 	}
 
-	@RequestMapping(
-			method = {RequestMethod.POST}
-	)
+	@PostMapping
 	public ResponseEntity<?> createTask(@RequestBody TaskDto taskDto) {
-		this.taskService.save(taskDto);
+		taskService.save(taskDto);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+
+	@GetMapping("/{teacherId}")
+	public ResponseEntity<List<TaskDto>> getAllTeachersTasks(@PathVariable long teacherId) {
+		List<TaskDto> tasks = taskService.getAllTeachersTasks(teacherId);
+		return new ResponseEntity<> (tasks, HttpStatus.OK);
 	}
 }
