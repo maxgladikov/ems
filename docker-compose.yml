@@ -144,6 +144,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://student-db:5432/student
     ports:
       - '9001:9001'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ems_logs:/app/logs
     networks:

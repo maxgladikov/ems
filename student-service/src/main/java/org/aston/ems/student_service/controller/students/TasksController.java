@@ -103,7 +103,7 @@ public class TasksController {
             var data = new AnswerData(id, studentId, answer.get());
 
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:9002/api/v1/teacher/tasks/" + id;
+            String resourceUrl = "http://host.docker.internal:9002/api/v1/teacher/tasks/" + id;
             HttpEntity<AnswerData> requestUpdate = new HttpEntity<>(data);
             restTemplate.exchange(resourceUrl, HttpMethod.PUT, requestUpdate, Void.class);
         }
