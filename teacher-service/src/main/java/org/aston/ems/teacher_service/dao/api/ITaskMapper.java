@@ -1,10 +1,9 @@
-package org.aston.ems.teacher_service.dao;
+package org.aston.ems.teacher_service.dao.api;
 
 import org.aston.ems.teacher_service.core.TaskDto;
+import org.aston.ems.teacher_service.dao.model.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ITaskMapper {

@@ -1,4 +1,4 @@
-package org.aston.ems.teacher_service.service;
+package org.aston.ems.teacher_service.service.api;
 
 import org.aston.ems.teacher_service.core.TaskDto;
 
@@ -8,7 +8,7 @@ public interface ITaskService {
     void save(TaskDto taskDto);
     List<TaskDto> getAllTeachersTasks(long teacherId);
     void delete(long id);
-
-    void update(long id, int mark);
+    void updateMark(long id, int mark);
+    void updateAnswer(long id, long studentId, String answer);
 }
 
