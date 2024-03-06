@@ -15,7 +15,8 @@ public class TaskDto {
     private long id;
     private long studentId;
     private long teacherId;
-    private String task;
+    private String content;
+    private String answer;
     private boolean checked;
     private int mark;
 }
