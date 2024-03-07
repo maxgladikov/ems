@@ -138,6 +138,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://teacher-db:5432/tasks
     ports:
       - '9002:9002'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ems_logs:/app/logs
     networks:
