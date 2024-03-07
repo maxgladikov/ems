@@ -13,8 +13,10 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class StudentClient implements IStudentClient {
     private final RestTemplate restTemplate;
-    private static final String SERVICE_URL_TASK = "http://localhost:9001/api/v1/students/%s/tasks";
-    private static final String SERVICE_URL_MARK = "http://localhost:9001/api/v1/students/%d/tasks/%d";
+    private static final String SERVICE_URL_TASK = "http://host.docker.internal:9001/api/v1/students/%s/tasks";
+    private static final String SERVICE_URL_MARK = "http://host.docker.internal:9001/api/v1/students/%d/tasks/%d";
+
+
     @Autowired
     public StudentClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
