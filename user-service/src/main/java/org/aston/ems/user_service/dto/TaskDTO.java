@@ -1,10 +1,10 @@
-package org.aston.ems.student_service.dto;
+package org.aston.ems.user_service.dto;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
+@Data
 public class TaskDTO {
 
     private Long id;

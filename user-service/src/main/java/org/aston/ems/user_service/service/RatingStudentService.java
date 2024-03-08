@@ -4,10 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
+import org.aston.ems.user_service.dto.StudentProgressDataDTO;
 import org.aston.ems.user_service.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -42,7 +45,7 @@ public class RatingStudentService {
 
     public List<UserDTO> getRatingStudent(Comparator<UserDTO> comparator, int start, int end) throws JsonProcessingException {
 
-        List<UserDTO> list = getListUserDTOForParseJsonListStudent();
+        List<UserDTO>list = getListUserDTOForParseJsonListStudent();
 
         list.sort(comparator);
 
@@ -52,7 +55,18 @@ public class RatingStudentService {
     }
 
     private List<UserDTO> getListUserDTOForParseJsonListStudent() throws JsonProcessingException {
-        return objectMapper.readValue(jsonListStudent, new TypeReference<>(){});
+        List<UserDTO> userDTOList = new ArrayList<>();
+        List<StudentProgressDataDTO> list = objectMapper.readValue(jsonListStudent, new TypeReference<>(){});
+
+        System.out.println("list: " + list.toString());
+
+        for (StudentProgressDataDTO student : list) {
+            System.out.println("listDTOData=" + student);
+            userDTOList.add(new UserDTO(student.getNickname(), Math.toIntExact(student.getId())));
+            System.out.println("userData="+userDTOList);
+        }
+        System.out.println("userDTOLIST="+userDTOList);
+        return userDTOList;
     }
     private int getSizeArrayIfLastElementIsLarger(int listSize, int end) {
 
