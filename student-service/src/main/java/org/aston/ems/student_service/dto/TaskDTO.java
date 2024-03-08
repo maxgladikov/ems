@@ -2,7 +2,6 @@ package org.aston.ems.student_service.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.aston.ems.student_service.model.Score;
 
 @Setter
 @Getter
@@ -12,5 +11,5 @@ public class TaskDTO {
     private Long assigneeId;
     private String content;
     private String answer;
-    private Score mark;
+    private int mark;
 }

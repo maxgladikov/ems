@@ -12,16 +12,12 @@ import lombok.AllArgsConstructor;
 import org.aston.ems.student_service.dto.StudentCreateDTO;
 import org.aston.ems.student_service.dto.StudentDTO;
 import org.aston.ems.student_service.dto.StudentProgressDataDTO;
-import org.aston.ems.student_service.dto.StudentUpdateDTO;
 import org.aston.ems.student_service.service.StudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClient;
 
 import java.util.List;
-import java.util.Map;
 
 @Tag(name = "Student controller", description = "Interaction with students")
 @RestController
