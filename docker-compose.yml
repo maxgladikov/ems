@@ -9,7 +9,7 @@ services:
     - "2181:2181"
     networks:
       - backend
-  
+
   kafka:
     image: wurstmeister/kafka
     container_name: ems.kafka
@@ -150,6 +150,7 @@ services:
       - logstash   
       - kafka   
       - teacher-db
+
 
 volumes:
   ems_logs:
