@@ -3,7 +3,6 @@ package org.aston.ems.teacher_service.dao.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
-import org.aston.ems.teacher_service.dao.model.BaseEntity;
 
 @Getter
 @Setter
