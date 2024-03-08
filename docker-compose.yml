@@ -6,7 +6,7 @@ services:
     image: wurstmeister/zookeeper
     container_name: ems.zookeeper
     ports:
-    - "2181:2181"
+      - "2181:2181"
     networks:
       - backend
 
@@ -14,7 +14,7 @@ services:
     image: wurstmeister/kafka
     container_name: ems.kafka
     ports:
-    - "9092:9092"
+      - "9092:9092"
     environment:
       KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -22,7 +22,9 @@ services:
     networks:
       - backend
     depends_on:
-      - zookeeper    
+      - zookeeper
+  
+
 
   admin-db:
     image: postgres:15.4
@@ -60,6 +62,22 @@ services:
       - teacher
     ports:
       - '5002:5432'
+
+  student-db:
+    image: postgres:15.4
+    #pull_policy: never
+    container_name: ems.student-db
+    restart: always
+    environment:
+      POSTGRES_DB: student
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      TZ: "Asia/Yekaterinburg"
+      PGTZ: "Asia/Yekaterinburg"
+    networks:
+      - student
+    ports:
+      - '5001:5432'
     deploy:
       resources:
         limits:
@@ -79,7 +97,7 @@ services:
       - xpack.security.enabled=false
     networks:
       - backend
-  
+
   logstash:
     image: logstash:8.3.3
     container_name: ems.logstash
@@ -96,7 +114,7 @@ services:
     networks:
       - backend
     depends_on:
-      - elasticsearch    
+      - elasticsearch
   
   kibana:
     image: kibana:8.3.3
@@ -109,15 +127,20 @@ services:
     networks:
       - backend
     depends_on:
-      - elasticsearch      
-
-
+      - elasticsearch
+  
   admin-service:
     image: "aston/ems.admin-service:latest"
     pull_policy: never
     container_name: ems.admin_service
     ports:
       - '9000:9000'
+    healthcheck:
+      test: "curl --fail --silent localhost:9000/actuator/health/readiness | grep UP || exit 1"
+      interval: 2s
+      timeout: 3s
+      retries: 2
+      start_period: 20s
     volumes:
       - ems_logs:/app/logs
     networks:
@@ -129,7 +152,47 @@ services:
       - kafka
       - admin-db
 
+  user-service:
+    image: "aston/ems.user-service:latest"
+    pull_policy: never
+    container_name: ems.user_service
+    ports:
+      - '9003:9003'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ems_logs:/app/logs
+    networks:
+      - backend
+      - user
+      - student
+    depends_on:
+      - elasticsearch
+      - logstash
+      - kafka
 
+
+  student-service:
+    image: "aston/ems.student-service:latest"
+    pull_policy: never
+    container_name: ems.student-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://student-db:5432/student
+    ports:
+      - '9001:9001'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ems_logs:/app/logs
+    networks:
+      - backend
+      - student
+    depends_on:
+      - elasticsearch
+      - logstash
+      - kafka
+      - student-db
+      
   teacher-service:
     image: "aston/ems.teacher-service:latest"
     pull_policy: never
@@ -149,17 +212,21 @@ services:
       - elasticsearch   
       - logstash   
       - kafka   
-      - teacher-db
+      - teacher-db     
 
 
 volumes:
   ems_logs:
-     driver: local  
-                     
+    driver: local
+
 networks:
   backend:
     driver: bridge
   admin:
+    driver: bridge
+  user:
+    driver: bridge
+  student:
     driver: bridge
   frontend:
     driver: bridge
@@ -167,3 +234,4 @@ networks:
     driver: bridge
   teacher:
     driver: bridge
+
