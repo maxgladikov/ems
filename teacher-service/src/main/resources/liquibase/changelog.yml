@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Alina
+      changes:
+        - sql: CREATE SCHEMA app;
+
+  -  changeSet:
+       id: 2
+       author: Alina
+       changes:
+         - createTable:
+             schemaName: app
+             tableName: task
+             columns:
+               - column:
+                   name: id
+                   type: BIGSERIAL
+                   constraints:
+                     primaryKey: true
+               - column:
+                   name: student_id
+                   type: BIGINT
+               - column:
+                   name: teacher_id
+                   type: BIGINT
+               - column:
+                   name: content
+                   type: TEXT
+               - column:
+                   name: answer
+                   type: TEXT
+               - column:
+                   name: checked
+                   type: BOOLEAN
+                   defaultValueBoolean: false
+               - column:
+                   name: mark
+                   type: BIGINT
