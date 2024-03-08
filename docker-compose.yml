@@ -165,7 +165,6 @@ services:
     networks:
       - backend
       - user
-      - student
     depends_on:
       - elasticsearch
       - logstash
