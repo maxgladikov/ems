@@ -3,12 +3,16 @@ package org.aston.ems.student_service.service;
 import lombok.AllArgsConstructor;
 import org.aston.ems.student_service.dto.StudentCreateDTO;
 import org.aston.ems.student_service.dto.StudentDTO;
+import org.aston.ems.student_service.dto.StudentProgressDataDTO;
 import org.aston.ems.student_service.dto.StudentUpdateDTO;
 import org.aston.ems.student_service.exception.ResourceNotFoundException;
 import org.aston.ems.student_service.mapper.StudentMapper;
+import org.aston.ems.student_service.mapper.TaskMapper;
 import org.aston.ems.student_service.repository.StudentRepository;
+import org.aston.ems.student_service.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,7 +21,18 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
+    private final TaskRepository taskRepository;
+
     private final StudentMapper studentMapper;
+
+    private final TaskMapper taskMapper;
+
+    public List<StudentProgressDataDTO> getAllWithProgressData() {
+        var students = studentRepository.findAll();
+        return students.stream()
+                .map(studentMapper::mapToProgressData)
+                .toList();
+    }
 
     public List<StudentDTO> getAll() {
         var students = studentRepository.findAll();

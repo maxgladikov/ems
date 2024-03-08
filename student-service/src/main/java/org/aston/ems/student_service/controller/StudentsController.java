@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.aston.ems.student_service.dto.StudentCreateDTO;
 import org.aston.ems.student_service.dto.StudentDTO;
+import org.aston.ems.student_service.dto.StudentProgressDataDTO;
 import org.aston.ems.student_service.dto.StudentUpdateDTO;
 import org.aston.ems.student_service.service.StudentService;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,19 @@ public class StudentsController {
             @Parameter(description = "Id of student to be searched")
             @PathVariable Long id) {
         return studentService.findById(id);
+    }
+
+    @Operation(summary = "Get list of all students with information about grades for assignments")
+    @ApiResponse(responseCode = "200", description = "List of all students with data",
+            content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = StudentProgressDataDTO.class)) })
+    @GetMapping("/progress")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<StudentProgressDataDTO>> index() {
+        var students = studentService.getAllWithProgressData();
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(students.size()))
+                .body(students);
     }
 
 //    @Operation(summary = "Get list of all students")
