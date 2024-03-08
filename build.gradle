@@ -5,11 +5,25 @@ plugins {
   id 'com.google.cloud.tools.jib' version '3.4.0'
 }
 
+ext { 
+		springCloudVersion = "2022.0.4"
+		mapstructVersion = "1.5.5.Final"
+		lombokVersion = "1.18.28"
+		jacocoVersion = "0.8.7"
+		jUnitVersion='5.10.2'
+		profiles = 'dev'
+	}
+
 version = '0.0.1'
+
+def springProjects=[project(':student-service'), project(':teacher-service'), project(':user-service'),project(':admin-service')]
+def libraryProjects=[project(':common-lib')]
 
 bootJar {
 		enabled = false
 	}
+
+
 
 
 allprojects {
@@ -18,12 +32,6 @@ allprojects {
 	apply plugin: 'java'
 	
 	group 'org.aston.ems'
-	
-	
-	ext { 
-		springCloudVersion = "2022.0.4"
-		profiles = 'dev'
-	}
 	
 	java {
 		toolchain {
@@ -45,7 +53,7 @@ allprojects {
 	
 }
 
-subprojects {
+configure(springProjects){
 	
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
@@ -81,8 +89,7 @@ subprojects {
 			events "passed"
 		}
 	}
-	
-	//** Integration Tests **\\
+
 	  sourceSets {
 		  intTest {
 			  compileClasspath += sourceSets.main.output
@@ -104,10 +111,8 @@ subprojects {
 			  events "passed"
 		  }
 	  }
-	  check.dependsOn integrationTest
-	//*************\\
-
 	
+	check.dependsOn integrationTest
 	
 	jib {
 		var tag = "latest"
@@ -139,9 +144,15 @@ subprojects {
 	  }
 	  
 	  build.dependsOn jibDockerBuild
-	
 }
 
+configure(libraryProjects){
+	apply plugin: 'java-library'
+	dependencies {
+		testImplementation "org.junit.jupiter:junit-jupiter:${jUnitVersion}"
+		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	}
+}
 
 
 
