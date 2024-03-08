@@ -27,10 +27,10 @@ public class RatingStudentService {
         this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
     }
-    @PostConstruct
-    public void init() {
-        this.jsonListStudent  = restTemplate.getForObject(URI, String.class);
-    }
+//    @PostConstruct
+//    public void init() {
+//        this.jsonListStudent  = restTemplate.getForObject(URI, String.class);
+//    }
 
     /**
      *
@@ -44,6 +44,8 @@ public class RatingStudentService {
      */
 
     public List<UserDTO> getRatingStudent(Comparator<UserDTO> comparator, int start, int end) throws JsonProcessingException {
+
+        this.jsonListStudent  = restTemplate.getForObject(URI, String.class);
 
         List<UserDTO>list = getListUserDTOForParseJsonListStudent();
 
