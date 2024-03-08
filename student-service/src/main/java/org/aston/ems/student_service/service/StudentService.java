@@ -12,7 +12,6 @@ import org.aston.ems.student_service.repository.StudentRepository;
 import org.aston.ems.student_service.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
