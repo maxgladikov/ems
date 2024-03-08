@@ -7,10 +7,6 @@ import org.aston.ems.student_service.model.Score;
 import org.aston.ems.student_service.model.Task;
 import org.mapstruct.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 @Mapper(
         uses = { JsonNullableMapper.class },
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,

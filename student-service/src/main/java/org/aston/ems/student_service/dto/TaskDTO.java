@@ -2,7 +2,6 @@ package org.aston.ems.student_service.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.aston.ems.student_service.model.Score;
 
 @Setter
 @Getter
