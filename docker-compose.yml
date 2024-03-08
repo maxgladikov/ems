@@ -113,6 +113,7 @@ services:
     depends_on:
       - elasticsearch
   
+
   admin-service:
     image: "aston/ems.admin-service:latest"
     pull_policy: never
@@ -136,6 +137,30 @@ services:
       - kafka
       - admin-db
 
+
+  user-service:
+    image: "aston/ems.user-service:latest"
+    pull_policy: never
+    container_name: ems.user_service
+    ports:
+      - '9003:9003'
+    extra_hosts:
+      - "host.docker.internal:host-gateway
+    volumes:
+      - ems_logs:/app/logs
+    networks:
+      - backend
+      - admin
+      - user
+    depends_on:
+      - elasticsearch   
+      - logstash   
+      - kafka   
+    depends_on:
+      - elasticsearch
+      - logstash
+      - kafka
+
   student-service:
     image: "aston/ems.student-service:latest"
     pull_policy: never
@@ -150,6 +175,13 @@ services:
       - ems_logs:/app/logs
     networks:
       - backend
+      - admin
+      - user
+    depends_on:
+      - elasticsearch   
+      - logstash   
+      - kafka   
+      - admin-db   
       - student
     depends_on:
       - elasticsearch
@@ -159,12 +191,14 @@ services:
 
 volumes:
   ems_logs:
-     driver: local  
+      driver: local
                      
 networks:
   backend:
     driver: bridge
   admin:
+    driver: bridge
+  user:
     driver: bridge
   student:
     driver: bridge
