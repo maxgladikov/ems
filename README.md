@@ -4,7 +4,7 @@ gradle ***project-name***:tasks    - show available tasks <br />
 gradle ***project-name***:check    - proceeds all tests <br />
 gradle ***project-name***:test     - proceeds unit tests <br />
 gradle ***project-name***:intTest  - proceeds integration tests <br />
-gradle ***project-name***:intTest  - compile, proceed tests and create docker image <br />
+gradle ***project-name***:build    - compile, proceed tests and create docker image <br />
 
 docker images - check available images <br />
 docker ps -a  - check available containers <br />
