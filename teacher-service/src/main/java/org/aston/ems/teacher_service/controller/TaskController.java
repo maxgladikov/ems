@@ -27,7 +27,7 @@ public class TaskController {
 	}
 
 	@GetMapping("/{teacherId}")
-	public ResponseEntity<List<TaskDto>> getAllTeachersTasks(@PathVariable long teacherId) {
+	public ResponseEntity<List<TaskDto>> getAllTeachersTasks(@PathVariable Long teacherId) {
 		List<TaskDto> tasks = taskService.getAllTeachersTasks(teacherId);
 		return new ResponseEntity<> (tasks, HttpStatus.OK);
 	}
@@ -45,8 +45,8 @@ public class TaskController {
 	}
 
 	@DeleteMapping("/{taskId}")
-	public ResponseEntity<?> delete(@PathVariable long taskId) {
+	public ResponseEntity<?> delete(@PathVariable Long taskId) {
 		taskService.delete(taskId);
-		return ResponseEntity.status(HttpStatus.OK).build();
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }

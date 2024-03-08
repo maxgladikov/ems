@@ -29,7 +29,8 @@ public class TaskService implements ITaskService {
     }
 
     public void save(TaskDto taskDto) {
-        Task savedTask = repository.save(mapper.toEntity(taskDto));
+        Task entity = mapper.toEntity(taskDto);
+        Task savedTask = repository.save(entity);
 
         RequestTaskDtoCreate requestTaskDto = new RequestTaskDtoCreate(savedTask.getId(),
                 taskDto.getStudentId(), taskDto.getContent());
@@ -37,17 +38,16 @@ public class TaskService implements ITaskService {
         studentClient.sendTask(taskDto.getStudentId(), requestTaskDto);
     }
 
-    public List<TaskDto> getAllTeachersTasks(long teacherId) {
+    public List<TaskDto> getAllTeachersTasks(Long teacherId) {
         List<Task> teachersTasks = repository.getAllByTeacherId(teacherId);
         return toDTOList(teachersTasks);
     }
 
-    public void delete(long id) {
-        Task task = repository.getReferenceById(id);
-        repository.delete(task);
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 
-    public void updateMark(long id, int mark) {
+    public void updateMark(Long id, int mark) {
         Task task = repository.getReferenceById(id);
         task.setMark(mark);
         task.setChecked(true);
@@ -58,12 +58,11 @@ public class TaskService implements ITaskService {
         studentClient.sendMark(task.getStudentId(), task.getId(), updateTask);
     }
 
-    @Override
-    public void updateAnswer(long id, long studentId, String answer) {
+    public void updateAnswer(Long id, Long studentId, String answer) {
         Optional<Task> optionalTask = repository.findById(id);
         if (optionalTask.isPresent()) {
             Task task = optionalTask.get();
-            if (task.getStudentId() == studentId) {
+            if (task.getStudentId().equals(studentId)) {
                 task.setAnswer(answer);
                 repository.save(task);
             }

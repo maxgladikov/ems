@@ -12,8 +12,8 @@ import org.aston.ems.teacher_service.dao.model.BaseEntity;
 @Entity
 @Table(name = "task", schema = "app")
 public class Task extends BaseEntity {
-    private long studentId;
-    private long teacherId;
+    private Long studentId;
+    private Long teacherId;
     private String content;
     private String answer;
     private boolean checked;

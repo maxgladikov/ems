@@ -23,7 +23,7 @@ public class StudentClient implements IStudentClient {
     }
 
     @Override
-    public void sendTask(long studentId, RequestTaskDtoCreate task) {
+    public void sendTask(Long studentId, RequestTaskDtoCreate task) {
         String url = String.format(SERVICE_URL_TASK, studentId);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

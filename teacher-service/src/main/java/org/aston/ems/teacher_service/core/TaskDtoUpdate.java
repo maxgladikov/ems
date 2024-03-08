@@ -8,20 +8,20 @@ import lombok.*;
 @Getter
 @Setter
 public class TaskDtoUpdate {
-    private long id;
-    private long studentId;
+    private Long id;
+    private Long studentId;
     private String answer;
     private int mark;
 
     @Builder
-    public TaskDtoUpdate(long id, long studentId, String answer) {
+    public TaskDtoUpdate(Long id, Long studentId, String answer) {
         this.id = id;
         this.studentId = studentId;
         this.answer = answer;
     }
 
     @Builder
-    public TaskDtoUpdate(long id, long studentId, int mark) {
+    public TaskDtoUpdate(Long id, Long studentId, int mark) {
         this.id = id;
         this.studentId = studentId;
         this.mark = mark;

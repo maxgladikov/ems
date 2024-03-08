@@ -1,5 +1,6 @@
 package org.aston.ems.teacher_service.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,9 +13,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TaskDto {
-    private long id;
-    private long studentId;
-    private long teacherId;
+    @JsonIgnore
+    private Long id;
+    private Long studentId;
+    private Long teacherId;
     private String content;
     private String answer;
     private boolean checked;
