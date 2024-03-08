@@ -12,5 +12,5 @@ public class TaskDTO {
     private Long assigneeId;
     private String content;
     private String answer;
-    private Score mark;
+    private int mark;
 }
