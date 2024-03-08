@@ -58,14 +58,10 @@ public class RatingStudentService {
         List<UserDTO> userDTOList = new ArrayList<>();
         List<StudentProgressDataDTO> list = objectMapper.readValue(jsonListStudent, new TypeReference<>(){});
 
-        System.out.println("list: " + list.toString());
-
         for (StudentProgressDataDTO student : list) {
-            System.out.println("listDTOData=" + student);
-            userDTOList.add(new UserDTO(student.getNickname(), Math.toIntExact(student.getId())));
-            System.out.println("userData="+userDTOList);
+            userDTOList.add(new UserDTO(student.getNickname(), student.getTasks().get(0).getMark()));
         }
-        System.out.println("userDTOLIST="+userDTOList);
+
         return userDTOList;
     }
     private int getSizeArrayIfLastElementIsLarger(int listSize, int end) {

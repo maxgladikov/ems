@@ -68,6 +68,8 @@ services:
     #pull_policy: never
     container_name: ems.student-db
     restart: always
+    volumes:
+      - C:\studyAndWork\ems\localDB\postgres\data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: student
       POSTGRES_USER: user
@@ -165,10 +167,12 @@ services:
     networks:
       - backend
       - user
+      - student
     depends_on:
       - elasticsearch
       - logstash
       - kafka
+      - student-service
 
 
   student-service:
