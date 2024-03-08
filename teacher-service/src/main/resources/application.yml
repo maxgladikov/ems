@@ -1,11 +1,23 @@
+server:
+  port: 9002
+
 spring:
   application:
-    name: login_service
+    name: teacher_service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5002/tasks?currentSchema=app
+    username: postgres
+    password: postgres
 
-server:
-    port: 9002
+  jpa:
+    properties:
+      hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      format_sql: true
 
 logging:
   level:
     root: INFO
-    org.springframework : INFO
+    org.springframework: INFO
+    org.aston.ems: DEBUG

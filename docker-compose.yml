@@ -9,7 +9,7 @@ services:
       - "2181:2181"
     networks:
       - backend
-  
+
   kafka:
     image: wurstmeister/kafka
     container_name: ems.kafka
@@ -47,6 +47,22 @@ services:
           cpus: '1'
           memory: 1G
 
+  teacher-db:
+    image: postgres:15.4
+    #pull_policy: never
+    container_name: ems.teacher-db
+    restart: always
+    environment:
+      POSTGRES_DB: tasks
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      TZ: "Asia/Yekaterinburg"
+      PGTZ: "Asia/Yekaterinburg"
+    networks:
+      - teacher
+    ports:
+      - '5002:5432'
+
   student-db:
     image: postgres:15.4
     #pull_policy: never
@@ -67,7 +83,7 @@ services:
         limits:
           cpus: '1'
           memory: 1G
-
+  
   elasticsearch:
     image: elasticsearch:8.3.3
     container_name: ems.elasticsearch
@@ -113,7 +129,6 @@ services:
     depends_on:
       - elasticsearch
   
-
   admin-service:
     image: "aston/ems.admin-service:latest"
     pull_policy: never
@@ -136,7 +151,6 @@ services:
       - logstash
       - kafka
       - admin-db
-
 
   user-service:
     image: "aston/ems.user-service:latest"
@@ -177,6 +191,28 @@ services:
       - logstash
       - kafka
       - student-db
+      
+  teacher-service:
+    image: "aston/ems.teacher-service:latest"
+    pull_policy: never
+    container_name: ems.teacher_service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://teacher-db:5432/tasks
+    ports:
+      - '9002:9002'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ems_logs:/app/logs
+    networks:
+      - backend
+      - teacher
+    depends_on:
+      - elasticsearch   
+      - logstash   
+      - kafka   
+      - teacher-db     
+
 
 volumes:
   ems_logs:
@@ -195,3 +231,6 @@ networks:
     driver: bridge
   elk:
     driver: bridge
+  teacher:
+    driver: bridge
+
