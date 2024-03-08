@@ -13,6 +13,6 @@ public class HelloController {
 	ResponseEntity<String>  doGreet(){
 		return ResponseEntity.ok()
 				.header("Access-Control-Allow-Origin", "*")
-				.body("Hello!");
+				.body("Hello! It's Student Service.");
 	}
 }
