@@ -37,3 +37,12 @@ databaseChangeLog:
                - column:
                    name: mark
                    type: BIGINT
+  - changeSet:
+      id: 3
+      author: Alina
+      changes:
+        - modifySql:
+            replace:
+              - replace:
+                  sql: "ALTER SEQUENCE app.task_id_seq RESTART WITH 1"
+                  replaceWith: "SELECT 1"
