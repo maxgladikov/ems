@@ -27,10 +27,10 @@ public class RatingStudentService {
         this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
     }
-    @PostConstruct
-    public void init() {
-        this.jsonListStudent  = restTemplate.getForObject(URI, String.class);
-    }
+//    @PostConstruct
+//    public void init() {
+//        this.jsonListStudent  = restTemplate.getForObject(URI, String.class);
+//    }
 
     /**
      *
@@ -45,6 +45,8 @@ public class RatingStudentService {
 
     public List<UserDTO> getRatingStudent(Comparator<UserDTO> comparator, int start, int end) throws JsonProcessingException {
 
+        this.jsonListStudent  = restTemplate.getForObject(URI, String.class);
+
         List<UserDTO>list = getListUserDTOForParseJsonListStudent();
 
         list.sort(comparator);
@@ -58,14 +60,10 @@ public class RatingStudentService {
         List<UserDTO> userDTOList = new ArrayList<>();
         List<StudentProgressDataDTO> list = objectMapper.readValue(jsonListStudent, new TypeReference<>(){});
 
-        System.out.println("list: " + list.toString());
-
         for (StudentProgressDataDTO student : list) {
-            System.out.println("listDTOData=" + student);
-            userDTOList.add(new UserDTO(student.getNickname(), Math.toIntExact(student.getId())));
-            System.out.println("userData="+userDTOList);
+            userDTOList.add(new UserDTO(student.getNickname(), student.getTasks().get(0).getMark()));
         }
-        System.out.println("userDTOLIST="+userDTOList);
+
         return userDTOList;
     }
     private int getSizeArrayIfLastElementIsLarger(int listSize, int end) {
