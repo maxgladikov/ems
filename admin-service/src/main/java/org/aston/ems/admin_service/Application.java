@@ -1,13 +1,28 @@
 package org.aston.ems.admin_service;
 
-import org.aston.ems.common_lib.exception.web.EmsResponse;
+import lombok.RequiredArgsConstructor;
+import org.aston.ems.admin_service.dto.UserDto;
+import org.aston.ems.admin_service.mapper.UserMapper;
+import org.aston.ems.admin_service.service.UserService;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Application {
+@RequiredArgsConstructor
+public class Application implements CommandLineRunner {
+
+
+	private final UserService service;
+
+	private final UserMapper mapper;
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
-		new EmsResponse<String>();
+		}
+
+	@Override
+	public void run(String... args) throws Exception {
+
+	service.create(mapper.fromDto(new UserDto("max","secret",new String[]{"ADMIN"})));
 	}
 }

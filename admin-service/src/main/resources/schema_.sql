@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS users(
+    id BIGINT,
+    username VARCHAR(25) NOT NULL UNIQUE,
+    parole VARCHAR(50) NOT NULL,
+    authority VARCHAR(25) NOT NULL,
+    PRIMARY KEY(id)
+);

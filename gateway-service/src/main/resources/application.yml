@@ -28,7 +28,7 @@ spring:
      
 
 server:
-    port: 8000
+    port: 8080
 
 logging:
   level:
@@ -46,4 +46,23 @@ management:
     health:
       probes:
         enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8000/eureka
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8000/eureka
     
