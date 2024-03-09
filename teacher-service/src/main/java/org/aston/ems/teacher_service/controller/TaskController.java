@@ -32,7 +32,7 @@ public class TaskController {
 		return new ResponseEntity<> (tasks, HttpStatus.OK);
 	}
 
-	@PutMapping("/tasks/{taskId}")
+	@PutMapping("/{taskId}")
 	public ResponseEntity<?> updateTaskAnswer(@PathVariable Long taskId, @RequestBody TaskDtoUpdate request) {
 		taskService.updateAnswer(taskId, request.getStudentId(), request.getAnswer());
 		return ResponseEntity.ok().build();

@@ -54,7 +54,7 @@ public class TaskService implements ITaskService {
         repository.save(task);
 
         TaskDtoUpdate updateTask = new TaskDtoUpdate(task.getId(),
-                task.getTeacherId(), task.getMark());
+                task.getStudentId(), task.getMark());
         studentClient.sendMark(task.getStudentId(), task.getId(), updateTask);
     }
 
