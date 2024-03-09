@@ -13,7 +13,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TaskDto {
-    @JsonIgnore
     private Long id;
     private Long studentId;
     private Long teacherId;
