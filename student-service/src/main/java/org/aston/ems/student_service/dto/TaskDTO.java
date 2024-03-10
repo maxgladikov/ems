@@ -6,7 +6,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class TaskDTO {
-
     private Long id;
     private String nickname;
     private String content;

@@ -9,9 +9,9 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ITaskMapper {
-    @Mapping(source = "teacherId", target = "teacherId.id")
+    @Mapping(source = "teacherId", target = "teacher.id")
     Task toEntity(TaskDto dto);
 
-    @Mapping(source = "teacherId.id", target = "teacherId")
+    @Mapping(source = "teacher.id", target = "teacherId")
     TaskDto toDTO(Task entity);
 }

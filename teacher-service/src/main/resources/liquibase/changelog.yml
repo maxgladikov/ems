@@ -19,7 +19,7 @@ databaseChangeLog:
                    constraints:
                      primaryKey: true
                - column:
-                   name: nick_name
+                   name: nickname
                    type: TEXT
                - column:
                    name: teacher_id
@@ -82,10 +82,12 @@ databaseChangeLog:
       author: Alina
       changes:
         - addForeignKeyConstraint:
-            baseTableName: app.task
-            baseColumnNames: teacherId
+            baseTableName: task
+            baseColumnNames: teacher_id
+            baseTableSchemaName: app
             constraintName: fk_task_teacher
-            referencedTableName: app.teacher
+            referencedTableName: teacher
             referencedColumnNames: id
+            referencedTableSchemaName: app
             onDelete: CASCADE
             onUpdate: CASCADE

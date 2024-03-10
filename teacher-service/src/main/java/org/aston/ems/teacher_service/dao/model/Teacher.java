@@ -18,7 +18,8 @@ import java.util.List;
 public class Teacher extends BaseEntity {
     private String name;
     @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private Role authorities;
-    @OneToMany
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<Task> tasks;
 }

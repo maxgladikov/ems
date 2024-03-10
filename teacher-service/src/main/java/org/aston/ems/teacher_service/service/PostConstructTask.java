@@ -6,14 +6,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PostConstructTask {
-    private final ITeacherService service;
-
-    public PostConstructTask(ITeacherService service) {
-        this.service = service;
-    }
-
-    @PostConstruct
-    public void saveTeacherBySchedule() {
-        service.saveTeachers();
-    }
+//    private final ITeacherService service;
+//
+//    public PostConstructTask(ITeacherService service) {
+//        this.service = service;
+//    }
+//
+//    @PostConstruct
+//    public void saveTeacherBySchedule() {
+//        service.saveTeachers();
+//    }
 }

@@ -11,21 +11,21 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskDtoUpdate {
     private Long id;
-    private String nickName;
+    private String nickname;
     private String answer;
     private int mark;
 
     @Builder
-    public TaskDtoUpdate(Long id, String nickName, String answer) {
+    public TaskDtoUpdate(Long id, String nickname, String answer) {
         this.id = id;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.answer = answer;
     }
 
     @Builder
-    public TaskDtoUpdate(Long id, String nickName, int mark) {
+    public TaskDtoUpdate(Long id, String nickname, int mark) {
         this.id = id;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.mark = mark;
     }
 }
