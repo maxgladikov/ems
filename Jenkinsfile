@@ -20,7 +20,7 @@ pipeline {
 					
 		 stage("Test admin service") {
             steps { 
-//                 sh "gradle admin-service:test"
+                sh "gradle admin-service:test"
 				sh "gradle admin-service:intTest"
               }                       
         }
@@ -31,18 +31,24 @@ pipeline {
 				sh "gradle gateway-service:intTest"
               }                       
         }
-                                      
+
+        stage("Build gateway service") {
+                steps {
+                    sh "gradle gateway-service:build"
+                  }
+                }
+
+        stage("Build discovery service") {
+                steps {
+                    sh "gradle discovery-service:build"
+                  }
+                }
+
         stage("Build admin service") {
             steps { 
                 sh "gradle admin-service:build"
               }
             }
-
-         stage("Build discovery service") {
-                    steps {
-                        sh "gradle discovery-service:build"
-                      }
-                    }
 
         stage("Build user service") {
             steps { 
@@ -50,13 +56,13 @@ pipeline {
               }
             }
 
-            stage("Build student service") {
+        stage("Build student service") {
             steps {
                 sh "gradle student-service:build"
               }
             }
 
-            stage("Build teacher service") {
+        stage("Build teacher service") {
             steps {
                 sh "gradle teacher-service:build"
               }
