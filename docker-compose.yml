@@ -69,12 +69,14 @@ services:
     depends_on:
       - elasticsearch
 
-  eureka:
+  discovery-service:
     image: "aston/ems.discovery-service:latest"
     pull_policy: never
     container_name: ems.eureka
     ports:
       - '8000:8000'
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
     healthcheck:
       test: "curl --fail --silent localhost:8000/actuator/health/readiness | grep UP || exit 1"
       interval: 2s
@@ -84,12 +86,15 @@ services:
     networks:
       - backend
 
+
   gateway:
     image: "aston/ems.gateway-service:latest"
     pull_policy: never
     container_name: ems.gateway
     ports:
       - '8080:8080'
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
       interval: 2s
@@ -99,7 +104,7 @@ services:
     networks:
       - backend
     depends_on:
-      - eureka
+      - discovery-service
 
   teacher-db:
     image: postgres:15.4
@@ -141,32 +146,35 @@ services:
           memory: 1G
 
   admin-db:
-      image: postgres:15.4
-      #pull_policy: never
-      container_name: ems.admin-db
-      restart: always
-      environment:
-        POSTGRES_DB: test
-        POSTGRES_USER: user
-        POSTGRES_PASSWORD: pas
-        TZ: "Asia/Yekaterinburg"
-        PGTZ:  "Asia/Yekaterinburg"
-      networks:
-        - admin
-      ports:
-        - '5432:5432'
-      deploy:
-        resources:
-          limits:
-            cpus: '1'
-            memory: 1G
+    image: postgres:15.4
+    #pull_policy: never
+    container_name: ems.admin-db
+    restart: always
+    environment:
+      POSTGRES_DB: 'ems'
+      POSTGRES_USER: 'max'
+      POSTGRES_PASSWORD: 'pas'
+      TZ: "Asia/Yekaterinburg"
+      PGTZ: "Asia/Yekaterinburg"
+    networks:
+      - admin
+    ports:
+      - '5432:5432'
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
 
   admin-service:
     image: "aston/ems.admin-service:latest"
     pull_policy: never
-    container_name: ems.admin_service
+    container_name: ems.admin-service
     ports:
       - '9000:9000'
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
     healthcheck:
       test: "curl --fail --silent localhost:9000/actuator/health/readiness | grep UP || exit 1"
       interval: 2s
@@ -179,10 +187,8 @@ services:
       - backend
       - admin
     depends_on:
-      - logstash
-      - kafka
       - admin-db
-      - eureka
+      - discovery-service
 
   user-service:
     image: "aston/ems.user-service:latest"

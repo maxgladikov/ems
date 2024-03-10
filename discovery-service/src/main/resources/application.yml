@@ -20,9 +20,6 @@ server:
 logging:
   level:
     root: INFO
-    '[org.springframework]' : INFO
-    '[org.springframework.cloud]' : INFO
-    '[org.aston.ems]' : DEBUG
 
 management:
   endpoints:
