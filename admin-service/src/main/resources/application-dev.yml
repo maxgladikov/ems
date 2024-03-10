@@ -1,0 +1,50 @@
+spring:
+#  sql:
+#    init:
+#      mode: always
+  application:
+    name: admin-service
+  datasource:
+    username: max
+    password: pas
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/ems
+  liquibase:
+    enabled: true
+    change-log: classpath:liquibase/changelog-master.yml
+  jpa:
+#    defer-datasource-initialization: true
+#    open-in-view: false
+    show-sql: true
+    database: postgresql
+    hibernate:
+      ddl-auto: none
+
+server:
+    port: 9000
+
+logging:
+  level:
+    '[org.springframework]' : INFO
+    '[org.aston.ems]' : DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: false
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8000/eureka
+    
+
+

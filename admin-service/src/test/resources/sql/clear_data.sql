@@ -1,0 +1,3 @@
+TRUNCATE users CASCADE;
+TRUNCATE authorities CASCADE;
+TRUNCATE users_authorities CASCADE;

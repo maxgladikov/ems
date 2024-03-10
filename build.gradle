@@ -9,22 +9,24 @@ ext {
 		springCloudVersion = "2022.0.4"
 		mapstructVersion = "1.5.5.Final"
 		lombokVersion = "1.18.28"
-		jacocoVersion = "0.8.7"
 		jUnitVersion='5.10.2'
-		profiles = 'dev'
+		springVersion = dependencyManagement.importedProperties['spring-framework.version']
+
 	}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
 
 version = '0.0.1'
 
-def springProjects=[project(':student-service'), project(':teacher-service'), project(':user-service'),project(':admin-service')]
+def springProjects=[project(':student-service'), project(':teacher-service'), project(':user-service'),project(':admin-service'),project(':gateway-service'),project(':discovery-service')]
 def libraryProjects=[project(':common-lib')]
 
-bootJar {
-		enabled = false
-	}
-
-
-
+bootJar.enabled = false
 
 allprojects {
 	apply plugin: 'eclipse'
@@ -33,48 +35,50 @@ allprojects {
 	
 	group 'org.aston.ems'
 	
-	java {
-		toolchain {
-			languageVersion = JavaLanguageVersion.of(17)
-		}
-	}
-	
+	java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 	java.sourceCompatibility(JavaVersion.VERSION_17)
 	java.targetCompatibility(JavaVersion.VERSION_17)
 	compileJava.options.encoding = 'UTF-8'
-	repositories {
-		mavenLocal()
-		mavenCentral()
-	}
-	
+
+
 	tasks.withType(JavaCompile) {
 		options.encoding='UTF-8'
 	}
 	
+	repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
 }
 
 configure(springProjects){
 	
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
-	apply plugin: 'com.google.cloud.tools.jib' 
+	apply plugin: 'com.google.cloud.tools.jib'
+
+
 	
+
 	dependencies {
 		  implementation 'org.springframework.boot:spring-boot-configuration-processor'
-//		  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-		  implementation 'org.springframework.boot:spring-boot-starter-web'
-//		  implementation 'org.liquibase:liquibase-core'
+		  implementation 'org.springframework.boot:spring-boot-starter-actuator'
 		  compileOnly 'org.projectlombok:lombok'
 		  annotationProcessor 'org.projectlombok:lombok'
-  		  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  		  testImplementation ('org.springframework.boot:spring-boot-starter-test'){
+  		  	exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  		  	}
+  		  implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+//		implementation "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
-	
-	bootJar {
-		enabled = true
-	}
-	bootBuildImage{
-		imageName=rootProject.name+'-'+project.name
-	  }
+
+
+
+
+
+	bootJar.enabled = true
+	bootBuildImage.imageName=rootProject.name+'-'+project.name
 	
 	configurations {
 		compileOnly.extendsFrom annotationProcessor
@@ -144,11 +148,22 @@ configure(springProjects){
 	  }
 	  
 	  build.dependsOn jibDockerBuild
+
+	  dependencyManagement {
+		  imports {
+		    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		  }
+	}
 }
 
 configure(libraryProjects){
 	apply plugin: 'java-library'
 	dependencies {
+		compileOnly 'org.projectlombok:lombok:1.18.30'
+		annotationProcessor 'org.projectlombok:lombok:1.18.30'
+		implementation ("org.springframework:spring-web:${springVersion}"){
+  		  	exclude group: 'org.springframework', module: 'spring-beans'
+  		  	}
 		testImplementation "org.junit.jupiter:junit-jupiter:${jUnitVersion}"
 		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	}
