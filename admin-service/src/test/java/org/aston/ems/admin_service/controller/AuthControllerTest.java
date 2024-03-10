@@ -35,7 +35,6 @@ class AuthControllerTest extends ApplicationTest {
         @Test
         @Sql("classpath:/sql/clear_data.sql")
         @Sql("classpath:/sql/data.sql")
-        @Disabled
         void shouldReturn200() throws Exception{
             LoginRequest dto = new LoginRequest("max","max");
             String body = new ObjectMapper().writeValueAsString(dto);
@@ -51,7 +50,6 @@ class AuthControllerTest extends ApplicationTest {
         @Test
         @Sql("classpath:/sql/clear_data.sql")
         @Sql("classpath:/sql/data.sql")
-        @Disabled
         void shouldReturn401() throws Exception{
             LoginRequest dto = new LoginRequest("max","ma");
             String body = new ObjectMapper().writeValueAsString(dto);

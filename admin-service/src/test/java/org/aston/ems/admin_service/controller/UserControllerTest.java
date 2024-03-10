@@ -57,7 +57,6 @@ class UserControllerTest extends ApplicationTest {
         @Test
         @Sql("classpath:/sql/clear_data.sql")
         @Sql("classpath:/sql/data.sql")
-        @Disabled
         void shouldReturn200() throws Exception {
 
             String result = mvc.perform(get(url)
@@ -74,7 +73,6 @@ class UserControllerTest extends ApplicationTest {
         @Test
         @Sql("classpath:/sql/clear_data.sql")
         @Sql("classpath:/sql/data.sql")
-        @Disabled
         void shouldReturn401() throws Exception {
 
             String result = mvc.perform(get(url)
@@ -95,7 +93,6 @@ class UserControllerTest extends ApplicationTest {
         @Test
         @Sql("classpath:/sql/clear_data.sql")
         @Sql("classpath:/sql/data.sql")
-        @Disabled
         void shouldReturn200() throws Exception {
 
             String result = mvc.perform(get(url+"/max")
@@ -119,7 +116,6 @@ class UserControllerTest extends ApplicationTest {
         @Test
         @Sql("classpath:/sql/clear_data.sql")
         @Sql("classpath:/sql/data.sql")
-        @Disabled
         void shouldReturn200() throws Exception {
             mvc.perform(put(url)
                     .contentType(MediaType.APPLICATION_JSON).characterEncoding(StandardCharsets.UTF_8)
@@ -133,7 +129,6 @@ class UserControllerTest extends ApplicationTest {
         @Test
         @Sql("classpath:/sql/clear_data.sql")
         @Sql("classpath:/sql/data.sql")
-        @Disabled
         void shouldReturn403() throws Exception {
             mvc.perform(put(url)
                     .contentType(MediaType.APPLICATION_JSON).characterEncoding(StandardCharsets.UTF_8)
@@ -150,7 +145,6 @@ class UserControllerTest extends ApplicationTest {
 
         @WithMockUser(authorities = "ADMIN")
         @Test
-        @Disabled
         @Sql("classpath:/sql/clear_data.sql")
         @Sql("classpath:/sql/data.sql")
         void shouldReturn201() throws Exception {
@@ -167,7 +161,6 @@ class UserControllerTest extends ApplicationTest {
         @Test
         @Sql("classpath:/sql/clear_data.sql")
         @Sql("classpath:/sql/data.sql")
-        @Disabled
         void shouldReturn403() throws Exception {
             mvc.perform(post(url)
                     .contentType(MediaType.APPLICATION_JSON).characterEncoding(StandardCharsets.UTF_8)
@@ -185,7 +178,6 @@ class UserControllerTest extends ApplicationTest {
         @Test
         @Sql("classpath:/sql/clear_data.sql")
         @Sql("classpath:/sql/data.sql")
-        @Disabled
         void shouldReturn200() throws Exception {
 
            mvc.perform(delete(url + "/max")
@@ -199,7 +191,6 @@ class UserControllerTest extends ApplicationTest {
         @Test
         @Sql("classpath:/sql/clear_data.sql")
         @Sql("classpath:/sql/data.sql")
-        @Disabled
         void shouldReturn403() throws Exception {
 
             String result = mvc.perform(delete(url + "/max")
