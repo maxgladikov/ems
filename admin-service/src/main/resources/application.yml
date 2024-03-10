@@ -8,7 +8,7 @@ spring:
     username: max
     password: pas
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/ems
+
   liquibase:
     enabled: true
     change-log: classpath:liquibase/changelog-master.yml
@@ -37,12 +37,31 @@ management:
     health:
       probes:
         enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:postgresql://admin-db:5432/ems
 eureka:
   instance:
     preferIpAddress: true
   client:
-    registerWithEureka: false
+    registerWithEureka: true
     fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://discovery-service:8000/eureka
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ems
+eureka:
+  client:
     serviceUrl:
       defaultZone: http://localhost:8000/eureka
     
