@@ -15,14 +15,14 @@ import org.mapstruct.*;
 )
 public abstract class TaskMapper {
 
-    @Mapping(target = "assignee.id", source = "assigneeId")
+    @Mapping(target = "assignee.nickname", source = "nickname")
     public abstract Task map(TaskCreateDTO dto);
 
-    @Mapping(source = "assignee.id", target = "assigneeId")
+    @Mapping(source = "assignee.nickname", target = "nickname")
     @Mapping(source = "score", target = "mark")
     public abstract TaskDTO map(Task model);
 
-    @Mapping(target = "assignee.id", source = "assigneeId")
+    @Mapping(target = "assignee.nickname", source = "nickname")
     @Mapping(target = "score", source = "mark")
     public abstract void update(TaskUpdateDTO dto, @MappingTarget Task model);
 

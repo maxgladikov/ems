@@ -8,7 +8,7 @@ import lombok.Setter;
 public class TaskDTO {
 
     private Long id;
-    private Long assigneeId;
+    private String nickname;
     private String content;
     private String answer;
     private int mark;

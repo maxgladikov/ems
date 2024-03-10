@@ -7,9 +7,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class StudentUpdateDTO {
-
-    private Long id;
-
     @NotNull
     private String nickname;
 }

@@ -13,7 +13,7 @@ public class TaskCreateDTO {
     private Long id;
 
     @NotNull
-    private Long assigneeId;
+    private String nickname;
 
     @NotBlank
     private String content;
