@@ -44,11 +44,24 @@ pipeline {
                       }
                     }
 
-        stage("Build gateway service") {
+        stage("Build user service") {
             steps { 
-                sh "gradle gateway-service:build"
+                sh "gradle user-service:build"
               }
-            }              
+            }
+
+            stage("Build student service") {
+            steps {
+                sh "gradle student-service:build"
+              }
+            }
+
+            stage("Build teacher service") {
+            steps {
+                sh "gradle teacher-service:build"
+              }
+            }
+
            } 
    post { 
         always { 
