@@ -13,8 +13,8 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class StudentClient implements IStudentClient {
     private final RestTemplate restTemplate;
-    private static final String SERVICE_URL_TASK = "http://host.docker.internal:9001/api/v1/students/%s/tasks";
-    private static final String SERVICE_URL_MARK = "http://host.docker.internal:9001/api/v1/students/%d/tasks/%d";
+    private static final String SERVICE_URL_TASK = "http://host.docker.internal:9001/api/v1/students/tasks";
+    private static final String SERVICE_URL_MARK = "http://host.docker.internal:9001/api/v1/students/tasks/%d";
 
 
     @Autowired
@@ -23,8 +23,8 @@ public class StudentClient implements IStudentClient {
     }
 
     @Override
-    public void sendTask(Long studentId, RequestTaskDtoCreate task) {
-        String url = String.format(SERVICE_URL_TASK, studentId);
+    public void sendTask(String nickName, RequestTaskDtoCreate task) {
+        String url = String.format(SERVICE_URL_TASK);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<RequestTaskDtoCreate> request = new HttpEntity<>(task, headers);
@@ -32,8 +32,8 @@ public class StudentClient implements IStudentClient {
     }
 
     @Override
-    public void sendMark(Long studentId, Long taskId, TaskDtoUpdate request) {
-        String url = String.format(SERVICE_URL_MARK, studentId, taskId);
+    public void sendMark(Long taskId, TaskDtoUpdate request) {
+        String url = String.format(SERVICE_URL_MARK, taskId);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 

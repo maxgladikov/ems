@@ -12,6 +12,6 @@ import lombok.Setter;
 @Setter
 public class RequestTaskDtoCreate {
     private Long id;
-    private Long assigneeId;
+    private String nickName;
     private String content;
 }

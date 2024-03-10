@@ -33,9 +33,9 @@ public class TaskService implements ITaskService {
         Task savedTask = repository.save(entity);
 
         RequestTaskDtoCreate requestTaskDto = new RequestTaskDtoCreate(savedTask.getId(),
-                taskDto.getStudentId(), taskDto.getContent());
+                taskDto.getNickName(), taskDto.getContent());
 
-        studentClient.sendTask(taskDto.getStudentId(), requestTaskDto);
+        studentClient.sendTask(taskDto.getNickName(), requestTaskDto);
     }
 
     public List<TaskDto> getAllTeachersTasks(Long teacherId) {
@@ -54,15 +54,15 @@ public class TaskService implements ITaskService {
         repository.save(task);
 
         TaskDtoUpdate updateTask = new TaskDtoUpdate(task.getId(),
-                task.getTeacherId(), task.getMark());
-        studentClient.sendMark(task.getStudentId(), task.getId(), updateTask);
+                task.getNickName(), task.getMark());
+        studentClient.sendMark(task.getId(), updateTask);
     }
 
-    public void updateAnswer(Long id, Long studentId, String answer) {
+    public void updateAnswer(Long id, String nickName, String answer) {
         Optional<Task> optionalTask = repository.findById(id);
         if (optionalTask.isPresent()) {
             Task task = optionalTask.get();
-            if (task.getStudentId().equals(studentId)) {
+            if (task.getNickName().equals(nickName)) {
                 task.setAnswer(answer);
                 repository.save(task);
             }

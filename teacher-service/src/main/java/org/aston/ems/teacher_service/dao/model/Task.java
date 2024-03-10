@@ -11,7 +11,7 @@ import lombok.*;
 @Entity
 @Table(name = "task", schema = "app")
 public class Task extends BaseEntity {
-    private Long studentId;
+    private String nickName;
     private Long teacherId;
     private String content;
     private String answer;

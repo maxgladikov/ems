@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 public class TaskDto {
     private Long id;
-    private Long studentId;
+    private String nickName;
     private Long teacherId;
     private String content;
     private String answer;
