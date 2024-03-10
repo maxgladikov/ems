@@ -9,7 +9,7 @@
 		implementation project(':common-lib')
 		implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 		implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-
+		implementation 'io.github.openfeign:feign-jackson:13.2.1'
 	}
 
 

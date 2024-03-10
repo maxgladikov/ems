@@ -30,12 +30,12 @@ spring:
 server:
     port: 8080
 
-logging:
-  level:
-    root: INFO
-    '[org.springframework]' : INFO
-    '[org.springframework.cloud]' : INFO
-    '[org.aston.ems]' : DEBUG
+#logging:
+#  level:
+#    root: INFO
+##    '[org.springframework]' : INFO
+#    '[org.springframework.cloud]' : INFO
+#    '[org.aston.ems]' : DEBUG
 
 management:
   endpoints:
