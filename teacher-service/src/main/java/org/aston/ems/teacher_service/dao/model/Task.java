@@ -1,8 +1,6 @@
 package org.aston.ems.teacher_service.dao.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
 
@@ -14,8 +12,7 @@ import lombok.*;
 @Table(name = "task", schema = "app")
 public class Task extends BaseEntity {
     private String nickName;
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Teacher teacherId;
+    private Long teacherId;
     private String content;
     private String answer;
     private boolean checked;
