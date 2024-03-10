@@ -10,6 +10,8 @@
 		implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.4'
 		implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 		implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+		  implementation 'org.springframework.boot:spring-boot-starter-web'
+		  implementation project(':common-lib')
 	}
 	
 	

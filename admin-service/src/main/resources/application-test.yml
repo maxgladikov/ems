@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: admin-service_test
+  liquibase:
+    enabled: true
+    change-log: classpath:liquibase/changelog-master.yml
+  jpa:
+    show-sql: true
+    database: postgresql
+    hibernate:
+      ddl-auto: none
+  cloud:
+      discovery:
+        enabled: false
+
+

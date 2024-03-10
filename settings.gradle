@@ -7,4 +7,4 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
 }
 rootProject.name = 'ems'
-include  'student-service', 'teacher-service', 'user-service', 'admin-service', 'common-lib' 
+include  'student-service', 'teacher-service', 'user-service', 'admin-service', 'common-lib', 'gateway-service', 'discovery-service'

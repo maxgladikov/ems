@@ -24,12 +24,25 @@ pipeline {
 				sh "gradle admin-service:intTest"
               }                       
         }
+
+        stage("Test gateway service") {
+            steps { 
+                sh "gradle gateway-service:test"
+				sh "gradle gateway-service:intTest"
+              }                       
+        }
                                       
         stage("Build admin service") {
             steps { 
                 sh "gradle admin-service:build"
               }
-            }       
+            }
+
+        stage("Build gateway service") {
+            steps { 
+                sh "gradle gateway-service:build"
+              }
+            }              
            } 
    post { 
         always { 
