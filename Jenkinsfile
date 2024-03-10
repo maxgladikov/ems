@@ -50,23 +50,23 @@ pipeline {
               }
             }
 
-        stage("Build user service") {
-            steps { 
-                sh "gradle user-service:build"
-              }
-            }
-
-        stage("Build student service") {
-            steps {
-                sh "gradle student-service:build"
-              }
-            }
-
-        stage("Build teacher service") {
-            steps {
-                sh "gradle teacher-service:build"
-              }
-            }
+//         stage("Build user service") {
+//             steps {
+//                 sh "gradle user-service:build"
+//               }
+//             }
+//
+//         stage("Build student service") {
+//             steps {
+//                 sh "gradle student-service:build"
+//               }
+//             }
+//
+//         stage("Build teacher service") {
+//             steps {
+//                 sh "gradle teacher-service:build"
+//               }
+//             }
 
            } 
    post { 
