@@ -22,10 +22,10 @@ public class TaskService {
 
     private final TaskMapper taskMapper;
 
-    public List<TaskDTO> getAll(Long studentId) {
-        var student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Student with id %s not found",
-                        studentId)));
+    public List<TaskDTO> getAll(String nickname) {
+        var student = studentRepository.findByNickname(nickname)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Student with nickname %s not found",
+                        nickname)));
         var tasks = taskRepository.findAllByAssignee(student);
         return tasks.stream()
                 .map(taskMapper::map)
@@ -35,8 +35,8 @@ public class TaskService {
     public TaskDTO create(TaskCreateDTO taskData) {
         var task = taskMapper.map(taskData);
 
-        var assigneeId = taskData.getAssigneeId();
-        var assignee = studentRepository.findById(assigneeId).orElse(null);
+        var nickname = taskData.getNickname();
+        var assignee = studentRepository.findByNickname(nickname).orElse(null);
         task.setAssignee(assignee);
 
         taskRepository.save(task);
@@ -49,9 +49,10 @@ public class TaskService {
         return taskMapper.map(task);
     }
 
-    public TaskDTO update(TaskUpdateDTO taskData, Long id) {
-        var task = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found", id)));
+    public TaskDTO update(TaskUpdateDTO taskData) {
+        var taskId = taskData.getId();
+        var task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Task with id %s not found", taskId)));
         taskMapper.update(taskData, task);
         taskRepository.save(task);
         return taskMapper.map(task);

@@ -25,7 +25,7 @@ import java.util.List;
 
 @Tag(name = "Student tasks controller", description = "Interaction with student tasks")
 @RestController
-@RequestMapping("/api/v1/students/{studentId}/tasks")
+@RequestMapping("/api/v1/students/tasks")
 @AllArgsConstructor
 public class TasksController {
 
@@ -55,9 +55,9 @@ public class TasksController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<TaskDTO>> index(
-            @Parameter(description = "The student id that will be used to find all his tasks")
-            @PathVariable Long studentId) {
-        var tasks = taskService.getAll(studentId);
+            @Parameter(description = "The student nickname that will be used to find all his tasks")
+            @RequestParam String nickname) {
+        var tasks = taskService.getAll(nickname);
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(tasks.size()))
                 .body(tasks);
@@ -89,17 +89,16 @@ public class TasksController {
     @PutMapping(ID)
     @ResponseStatus(HttpStatus.OK)
     public TaskDTO update(
-            @Parameter(description = "The student id that will be used to update his task")
-            @PathVariable Long studentId,
             @Parameter(description = "Task data to update")
             @RequestBody @Valid TaskUpdateDTO taskData,
             @Parameter(description = "Id of task to be updated")
             @PathVariable Long id) {
 
         var answer = taskData.getAnswer();
+        var nickname = taskData.getNickname();
 
         if (answer != null) {
-            var data = new AnswerData(id, studentId, answer.get());
+            var data = new AnswerData(id, nickname, answer.get());
 
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://host.docker.internal:9002/api/v1/teacher/tasks/" + id;
@@ -107,7 +106,7 @@ public class TasksController {
             restTemplate.exchange(resourceUrl, HttpMethod.PUT, requestUpdate, Void.class);
         }
 
-        return taskService.update(taskData, id);
+        return taskService.update(taskData);
     }
 
 //    @Operation(summary = "Delete task by its id")
