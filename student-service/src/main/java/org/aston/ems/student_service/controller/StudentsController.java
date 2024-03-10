@@ -57,18 +57,18 @@ public class StudentsController {
                 .body(students);
     }
 
-//    @Operation(summary = "Get list of all students")
-//    @ApiResponse(responseCode = "200", description = "List of all students",
-//            content = { @Content(mediaType = "application/json",
-//                    schema = @Schema(implementation = StudentDTO.class)) })
-//    @GetMapping("")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseEntity<List<StudentDTO>> index() {
-//        var students = studentService.getAll();
-//        return ResponseEntity.ok()
-//                .header("X-Total-Count", String.valueOf(students.size()))
-//                .body(students);
-//    }
+    @Operation(summary = "Get list of all students")
+    @ApiResponse(responseCode = "200", description = "List of all students",
+            content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = StudentDTO.class)) })
+    @GetMapping("")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<StudentDTO>> index() {
+        var students = studentService.getAll();
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(students.size()))
+                .body(students);
+    }
 
     @Operation(summary = "Create new student")
     @ApiResponses(value = {
