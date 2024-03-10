@@ -4,20 +4,21 @@ buildscript {
 		springCloudVersion = "2023.0.0"
 		jacocoVersion = "0.8.7"
 		profiles = 'dev'
-		springVersion = dependencyManagement.importedProperties['spring-framework.version']
+//		springVersion = dependencyManagement.importedProperties['spring-framework.version']
 	}
 }
 
 plugins {
-  id 'java'
-  id 'org.springframework.boot' version '3.2.2'
-  id 'io.spring.dependency-management' version '1.1.4'
-  id 'com.google.cloud.tools.jib' version '3.4.0'
+	id 'java'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version '1.1.4'
+	id 'com.google.cloud.tools.jib' version '3.4.0'
 }
 
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+repositories {
+	mavenCentral()
+	maven {
+		url "https://plugins.gradle.org/m2/"
 	}
 }
 
@@ -26,13 +27,15 @@ ext {
 	springCloudVersion = "2023.0.0"
 	lombokVersion = "1.18.28"
 	jUnitVersion='5.10.2'
-
+	springVersion = dependencyManagement.importedProperties['spring-framework.version']
 
 }
 
-
-
-
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
 
 
 version = '0.0.1'
@@ -43,51 +46,63 @@ bootJar.enabled = false
 
 allprojects {
 	apply plugin: 'eclipse'
-	apply plugin: 'idea'	
+	apply plugin: 'idea'
 	apply plugin: 'java'
-	
+
 	group 'org.aston.ems'
-	
+
 	java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 	java.sourceCompatibility(JavaVersion.VERSION_17)
 	java.targetCompatibility(JavaVersion.VERSION_17)
 	compileJava.options.encoding = 'UTF-8'
 
+
 	tasks.withType(JavaCompile) {
 		options.encoding='UTF-8'
 	}
+
 	repositories {
-        mavenCentral()
-        mavenLocal()
-    }
+		mavenCentral()
+		mavenLocal()
+	}
+
 }
 
+
 configure(springProjects){
-	
+
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
 	apply plugin: 'com.google.cloud.tools.jib'
 
+
+
+
 	dependencies {
-		  implementation 'org.springframework.boot:spring-boot-configuration-processor'
-		  implementation 'org.springframework.boot:spring-boot-starter-actuator'
-		  compileOnly 'org.projectlombok:lombok'
-		  annotationProcessor 'org.projectlombok:lombok'
-  		  testImplementation 'org.springframework.boot:spring-boot-starter-test'
-  		  implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+		implementation 'org.springframework.boot:spring-boot-configuration-processor'
+		implementation 'org.springframework.boot:spring-boot-starter-actuator'
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+		testImplementation ('org.springframework.boot:spring-boot-starter-test'){
+			exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+		}
+		implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+//		implementation "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
+
+
+
+
 
 	bootJar.enabled = true
 	bootBuildImage.imageName=rootProject.name+'-'+project.name
-	
+
 	configurations {
 		compileOnly.extendsFrom annotationProcessor
 		testCompileOnly.extendsFrom annotationProcessor
 		testAnnotationProcessor.extendsFrom annotationProcessor
-		intTestImplementation.extendsFrom testImplementation
-		intTestRuntimeOnly.extendsFrom runtimeOnly
 	}
-	
+
 	tasks.named('test', Test) {
 		useJUnitPlatform()
 		maxHeapSize = '1G'
@@ -96,62 +111,65 @@ configure(springProjects){
 		}
 	}
 
-	  sourceSets {
-		  intTest {
-			  compileClasspath += sourceSets.main.output
-			  runtimeClasspath += sourceSets.main.output
-		  }
-	  }
+	sourceSets {
+		intTest {
+			compileClasspath += sourceSets.main.output
+			runtimeClasspath += sourceSets.main.output
+		}
+	}
+	configurations {
+		intTestImplementation.extendsFrom testImplementation
+		intTestRuntimeOnly.extendsFrom runtimeOnly
+	}
+	tasks.register('integrationTest', Test) {
+		description = 'Runs integration tests.'
+		group = 'verification'
+		testClassesDirs = sourceSets.intTest.output.classesDirs
+		classpath = sourceSets.intTest.runtimeClasspath
+		shouldRunAfter test
+		useJUnitPlatform()
+		testLogging {
+			events "passed"
+		}
+	}
 
-	  tasks.register('integrationTest', Test) {
-		  description = 'Runs integration tests.'
-		  group = 'verification'
-		  testClassesDirs = sourceSets.intTest.output.classesDirs
-		  classpath = sourceSets.intTest.runtimeClasspath
-		  shouldRunAfter test
-		  useJUnitPlatform()
-		  testLogging {
-			  events "passed"
-		  }
-	  }
-	
 	check.dependsOn integrationTest
-	
+
 	jib {
 		var tag = "latest"
 		from {
-		  image = "eclipse-temurin:17.0.10_7-jre-jammy"	  
-		  platforms{
-			  platform {
-				  architecture = 'amd64' // 'arm64'
-						  os = 'linux'
-			  }
-		  }
+			image = "eclipse-temurin:17.0.10_7-jre-jammy"
+			platforms{
+				platform {
+					architecture = 'amd64' // 'arm64'
+					os = 'linux'
+				}
+			}
 		}
-		
+
 		to {
-		  image = "aston/${rootProject.name}.${project.name}:${rootProject.version}"
-		 tags = ["$tag"]
+			image = "aston/${rootProject.name}.${project.name}:${rootProject.version}"
+			tags = ["$tag"]
 		}
-		
+
 		container {
 			jvmFlags = [
-					  	"-server",
-						"-Duser.timezone=UTC",
-						"-Xms256m",
-						"-Xmx512m"
-						]
+					"-server",
+					"-Duser.timezone=UTC",
+					"-Xms256m",
+					"-Xmx512m"
+			]
 			creationTime = Instant.now().toString()
 			format = com.google.cloud.tools.jib.api.buildplan.ImageFormat.OCI
 		}
-	  }
-	  
-	  build.dependsOn jibDockerBuild
+	}
 
-	  dependencyManagement {
-		  imports {
-		    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-		  }
+	build.dependsOn jibDockerBuild
+
+	dependencyManagement {
+		imports {
+			mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		}
 	}
 }
 
@@ -161,8 +179,8 @@ configure(libraryProjects){
 		compileOnly 'org.projectlombok:lombok:1.18.30'
 		annotationProcessor 'org.projectlombok:lombok:1.18.30'
 		implementation ("org.springframework:spring-web:${springVersion}"){
-  		  	exclude group: 'org.springframework', module: 'spring-beans'
-  		  	}
+			exclude group: 'org.springframework', module: 'spring-beans'
+		}
 		testImplementation "org.junit.jupiter:junit-jupiter:${jUnitVersion}"
 		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	}
