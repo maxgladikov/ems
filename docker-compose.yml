@@ -2,6 +2,27 @@ version: '3.8'
 
 services:
 
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: ems.zookeeper
+    ports:
+    - "2181:2181"
+    networks:
+      - backend
+  
+  kafka:
+    image: wurstmeister/kafka
+    container_name: ems.kafka
+    ports:
+    - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+    networks:
+      - backend
+    depends_on:
+      - zookeeper    
 
   elasticsearch:
     image: elasticsearch:8.3.3
@@ -85,6 +106,44 @@ services:
     depends_on:
       - discovery-service
 
+  teacher-db:
+    image: postgres:15.4
+    #pull_policy: never
+    container_name: ems.teacher-db
+    restart: always
+    environment:
+      POSTGRES_DB: tasks
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      TZ: "Asia/Yekaterinburg"
+      PGTZ: "Asia/Yekaterinburg"
+    networks:
+      - teacher
+    ports:
+      - '5002:5432'
+
+  student-db:
+    image: postgres:15.4
+    #pull_policy: never
+    container_name: ems.student-db
+    restart: always
+    volumes:
+        - C:\studyAndWork\ems\localDB\postgres\data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: student
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      TZ: "Asia/Yekaterinburg"
+      PGTZ: "Asia/Yekaterinburg"
+    networks:
+      - student
+    ports:
+      - '5001:5432'
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
 
   admin-db:
     image: postgres:15.4
@@ -131,8 +190,68 @@ services:
       - admin-db
       - discovery-service
 
+  user-service:
+    image: "aston/ems.user-service:latest"
+    pull_policy: never
+    container_name: ems.user_service
+    ports:
+      - '9003:9003'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ems_logs:/app/logs
+    networks:
+      - backend
+      - user
+      - student
+    depends_on:
+      - logstash
+      - kafka
+      - student-service
+      - discovery-service
 
 
+  student-service:
+    image: "aston/ems.student-service:latest"
+    pull_policy: never
+    container_name: ems.student-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://student-db:5432/student
+    ports:
+      - '9001:9001'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ems_logs:/app/logs
+    networks:
+      - backend
+      - student
+    depends_on:
+      - discovery-service
+      - logstash
+      - kafka
+      - student-db
+
+  teacher-service:
+    image: "aston/ems.teacher-service:latest"
+    pull_policy: never
+    container_name: ems.teacher_service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://teacher-db:5432/tasks
+    ports:
+      - '9002:9002'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ems_logs:/app/logs
+    networks:
+      - backend
+      - teacher
+    depends_on:
+      - discovery-service
+      - logstash
+      - kafka
+      - teacher-db
 
 
 volumes:
