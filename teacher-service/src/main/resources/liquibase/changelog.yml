@@ -19,8 +19,8 @@ databaseChangeLog:
                    constraints:
                      primaryKey: true
                - column:
-                   name: student_id
-                   type: BIGINT
+                   name: nick_name
+                   type: TEXT
                - column:
                    name: teacher_id
                    type: BIGINT
@@ -46,3 +46,46 @@ databaseChangeLog:
               - replace:
                   sql: "ALTER SEQUENCE app.task_id_seq RESTART WITH 1"
                   replaceWith: "SELECT 1"
+
+  - changeSet:
+      id: 4
+      author: Alina
+      changes:
+        - createTable:
+            schemaName: app
+            tableName: teacher
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: TEXT
+              - column:
+                  name: role
+                  type: TEXT
+
+  - changeSet:
+      id: 5
+      author: Alina
+      changes:
+        - modifySql:
+            replace:
+              - replace:
+                  sql: "ALTER SEQUENCE app.teacher_id_seq RESTART WITH 1"
+                  replaceWith: "SELECT 1"
+
+  - changeSet:
+      id: 6
+      author: Alina
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: app.task
+            baseColumnNames: teacherId
+            constraintName: fk_task_teacher
+            referencedTableName: app.teacher
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE

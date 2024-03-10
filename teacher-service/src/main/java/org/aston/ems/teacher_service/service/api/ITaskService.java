@@ -9,6 +9,6 @@ public interface ITaskService {
     List<TaskDto> getAllTeachersTasks(Long teacherId);
     void delete(Long id);
     void updateMark(Long id, int mark);
-    void updateAnswer(Long id, Long studentId, String answer);
+    void updateAnswer(Long id, String nickName, String answer);
 }
 
