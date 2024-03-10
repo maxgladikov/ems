@@ -80,12 +80,15 @@ databaseChangeLog:
   - changeSet:
       id: 6
       author: Alina
+      schemaName: app
       changes:
         - addForeignKeyConstraint:
-            baseTableName: app.task
-            baseColumnNames: teacherId
+            baseTableName: task
+            baseColumnNames: teacher_id
+            baseTableSchemaName: app
             constraintName: fk_task_teacher
-            referencedTableName: app.teacher
+            referencedTableName: teacher
             referencedColumnNames: id
+            referencedTableSchemaName: app
             onDelete: CASCADE
             onUpdate: CASCADE

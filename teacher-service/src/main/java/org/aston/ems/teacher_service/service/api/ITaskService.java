@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ITaskService {
     void save(TaskDto taskDto);
-    List<TaskDto> getAllTeachersTasks(Long teacherId);
+    List<TaskDto> getAllTeachersTasks(String teachersName);
     void delete(Long id);
     void updateMark(Long id, int mark);
     void updateAnswer(Long id, String nickName, String answer);

@@ -27,8 +27,8 @@ public class TaskController {
 	}
 
 	@GetMapping("/{teacherId}")
-	public ResponseEntity<List<TaskDto>> getAllTeachersTasks(@PathVariable Long teacherId) {
-		List<TaskDto> tasks = taskService.getAllTeachersTasks(teacherId);
+	public ResponseEntity<List<TaskDto>> getAllTeachersTasks(@PathVariable String teacherName) {
+		List<TaskDto> tasks = taskService.getAllTeachersTasks(teacherName);
 		return new ResponseEntity<> (tasks, HttpStatus.OK);
 	}
 
