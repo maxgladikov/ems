@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 @Entity
 @Table(name = "students")
 @Getter
@@ -22,6 +24,7 @@ public class Student implements BaseEntity {
 
     @Id
     @EqualsAndHashCode.Include
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(unique = true)

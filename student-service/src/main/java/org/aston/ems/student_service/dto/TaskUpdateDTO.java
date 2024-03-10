@@ -14,7 +14,7 @@ public class TaskUpdateDTO {
     private Long id;
 
     @NotNull
-    private Long assigneeId;
+    private String nickname;
 
     private JsonNullable<String> answer;
 

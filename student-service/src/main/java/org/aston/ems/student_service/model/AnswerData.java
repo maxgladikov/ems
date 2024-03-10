@@ -13,7 +13,7 @@ public class AnswerData implements Serializable {
 
     private Long id;
 
-    private Long studentId;
+    private String nickname;
 
     private String answer;
 }

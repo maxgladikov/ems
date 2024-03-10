@@ -50,7 +50,7 @@ public class StudentsController {
                     schema = @Schema(implementation = StudentProgressDataDTO.class)) })
     @GetMapping("/progress")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<StudentProgressDataDTO>> index() {
+    public ResponseEntity<List<StudentProgressDataDTO>> getAllWithProgressData() {
         var students = studentService.getAllWithProgressData();
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(students.size()))
