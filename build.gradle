@@ -55,8 +55,8 @@ allprojects {
 	java.sourceCompatibility(JavaVersion.VERSION_17)
 	java.targetCompatibility(JavaVersion.VERSION_17)
 	compileJava.options.encoding = 'UTF-8'
-	
-	
+
+
 	tasks.withType(JavaCompile) {
 		options.encoding='UTF-8'
 	}
@@ -176,6 +176,8 @@ configure(springProjects){
 configure(libraryProjects){
 	apply plugin: 'java-library'
 	dependencies {
+		compileOnly 'org.projectlombok:lombok:1.18.30'
+		annotationProcessor 'org.projectlombok:lombok:1.18.30'
 		implementation ("org.springframework:spring-web:${springVersion}"){
   		  	exclude group: 'org.springframework', module: 'spring-beans'
   		  	}

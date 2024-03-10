@@ -24,9 +24,6 @@ public class UserServiceImpl implements UserService{
 	private final UserRepository userRepository;
 	private final AuthorityRepository authorityRepository;
 	private final PasswordEncoder encoder;
-	private final UserMapper mapper;
-
-	private final AuthorityRepository authorityRepo;
 
 	@Override
 	public User get(String name) {
@@ -42,28 +39,33 @@ public class UserServiceImpl implements UserService{
 	@Transactional
 	@Override
 	public void create(User user) {
+
+		if (userRepository.existsByUsername(user.getUsername()))
+			throw new RuntimeException();
+		log.info("************************");
+		log.info("user:{}",user.toString());
+		log.info("************************");
 		user.setPassword(encoder.encode(user.getPassword()));
 		var authorities = user.getAuthorities()
 			.stream().map(
-							x -> authorityRepository
-								.findByName(x.getName())
-								.orElse(saveAuthority(x)))
-				.toList();
+							x -> authorityRepository.findByName(x.getName())
+										.orElseGet(() -> authorityRepository.save(x))
+						).toList();
 		authorities.forEach(x -> x.addUser(user));
 		user.setAuthorities(authorities);
+		log.info("user:{}",user.toString());
 		userRepository.save(user);
+
 	}
 
-	private Authority saveAuthority(Authority auth){
-		return authorityRepository.save(auth);
-	}
-
+	@Transactional
 	@Override
 	public void update(User newUser) {
 		User oldUser = get(newUser.getUsername());
 		create(UserUtils.update(newUser,oldUser));
 	}
 
+	@Transactional
 	public void delete(String username) {
 		userRepository.deleteByUsername(username);
 	}

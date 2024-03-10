@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,9 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Getter
+@Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "authorities")
 public class Authority {
@@ -29,11 +29,15 @@ public class Authority {
     private String name;
 
     @JsonBackReference
-    @ManyToMany(mappedBy = "authorities")
-    @Builder.Default
-    private Set<User> users = new HashSet<>();
+    @ManyToMany(cascade={CascadeType.PERSIST,CascadeType.MERGE},mappedBy = "authorities")
+    private Set<User> users;
+
+    public Authority() {
+        this.users =  new HashSet<>();;
+    }
 
     public Authority(String name) {
+        this();
         this.name = name;
     }
 
@@ -51,5 +55,12 @@ public class Authority {
     @Override
     public int hashCode() {
         return 31*name.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Authority{" +
+            "name='" + name + '\'' +
+            '}';
     }
 }

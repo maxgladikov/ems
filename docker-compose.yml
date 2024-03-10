@@ -67,7 +67,39 @@ services:
     networks:
       - backend
     depends_on:
-      - elasticsearch      
+      - elasticsearch
+
+  eureka:
+    image: "aston/ems.discovery-service:latest"
+    pull_policy: never
+    container_name: ems.eureka
+    ports:
+      - '8000:8000'
+    healthcheck:
+      test: "curl --fail --silent localhost:8000/actuator/health/readiness | grep UP || exit 1"
+      interval: 2s
+      timeout: 3s
+      retries: 2
+      start_period: 20s
+    networks:
+      - backend
+
+  gateway:
+    image: "aston/ems.gateway-service:latest"
+    pull_policy: never
+    container_name: ems.gateway
+    ports:
+      - '8080:8080'
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      interval: 2s
+      timeout: 3s
+      retries: 2
+      start_period: 20s
+    networks:
+      - backend
+    depends_on:
+      - eureka
   
   admin-db:
       image: postgres:15.4
@@ -112,23 +144,7 @@ services:
       - logstash   
       - kafka   
       - admin-db
-  
-  gateway:
-    image: "aston/ems.gateway-service:latest"
-    pull_policy: never
-    container_name: ems.gateway
-    ports:
-      - '8000:8000'
-    healthcheck:
-      test: "curl --fail --silent localhost:8000/actuator/health/readiness | grep UP || exit 1"
-      interval: 2s
-      timeout: 3s
-      retries: 2
-      start_period: 20s
-    networks:
-      - backend
-    depends_on: 
-      - admin-service      
+      - eureka
 
 volumes:
   ems_logs:

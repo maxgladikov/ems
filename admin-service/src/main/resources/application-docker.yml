@@ -3,7 +3,7 @@ spring:
 #    init:
 #      mode: always
   application:
-    name: admin_service
+    name: admin-service
   datasource:
     username: max
     password: pas

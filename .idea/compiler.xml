@@ -16,6 +16,7 @@
         <module name="ems.discovery-service.main" />
         <module name="ems.gateway-service.main" />
         <module name="ems.teacher-service.test" />
+        <module name="ems.common-lib.main" />
         <module name="ems.teacher-service.main" />
       </profile>
       <profile name="Gradle Imported" enabled="true">

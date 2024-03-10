@@ -1,9 +1,11 @@
 package org.aston.ems.admin_service.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aston.ems.admin_service.dto.UserDto;
+import org.aston.ems.admin_service.dto.UserReqDto;
+import org.aston.ems.admin_service.dto.UserResDto;
 import org.aston.ems.admin_service.mapper.UserMapper;
 import org.aston.ems.admin_service.service.UserService;
 import org.aston.ems.admin_service.validation.DtoValidator;
@@ -26,38 +28,37 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/v1/admin/users", produces = "application/json")
 @Validated
-public class AdminController {
+public class UserController {
 
 	private final UserService service;
-
 	private final UserMapper mapper;
-	private final DtoValidator validator;
 
 	@GetMapping
-	public List<UserDto> get(){
-		return service.get().stream().map(mapper::toDto).toList();
+	public List<UserResDto> get(){
+		return service.get().stream().map(mapper::toResDto).toList();
 	}
 
 	@GetMapping("/{username}")
-	public UserDto getAll(@PathVariable @NotBlank String username){
-		 return mapper.toDto(service.get(username));
+	public UserResDto getAll(@PathVariable @NotBlank String username){
+		 return mapper.toResDto(service.get(username));
 	}
 
 	@PostMapping()
-	public ResponseEntity<?> create(@RequestBody UserDto newUser){
-		validator.validate(newUser);
-		service.create(mapper.fromDto(newUser));
+	public ResponseEntity<Void> create(@Valid @RequestBody UserReqDto newUser){
+		service.create(mapper.fromReqDto(newUser));
 		 return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	@PutMapping()
-	public void update(@RequestBody UserDto newUser){
-		validator.validate(newUser);
-		service.update(mapper.fromDto(newUser));
+	public ResponseEntity<Void> update(@Valid @RequestBody UserResDto newUser){
+		service.update(mapper.fromResDto(newUser));
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
-	@DeleteMapping()
-		public void delete(@PathVariable String username){
+
+	@DeleteMapping("/{username}")
+		public ResponseEntity<Void> delete(@PathVariable @NotBlank String username){
 		service.delete(username);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 }

@@ -58,7 +58,17 @@ public class SecurityUser implements UserDetails{
 	public boolean isEnabled() {
 		return true;
 	}
-	
-	
 
+	@Override
+	public int hashCode() {
+		return user.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof UserDetails))
+			return false;
+		UserDetails user = (UserDetails) obj;
+		return this.getUsername().equals(user.getUsername());
+	}
 }

@@ -1,5 +1,6 @@
 package org.aston.ems.admin_service.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aston.ems.admin_service.dto.LoginRequest;
@@ -11,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +25,7 @@ import java.util.function.Function;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/v1/admin/auth", produces = "application/json")
+@Validated
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final DtoValidator validator;
@@ -30,11 +33,21 @@ public class AuthController {
     private final Function<LoginRequest,Authentication> reqToAuth = login -> UsernamePasswordAuthenticationToken.unauthenticated(login.username(), login.password());
 
     @PostMapping
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, Authentication authentication){
-        validator.validate(loginRequest);
-        log.debug("/api/v1/auth endpoint was requested");
+    public String login(@RequestBody LoginRequest loginRequest){
         authenticationManager.authenticate(reqToAuth.apply(loginRequest));
-        return ResponseHandler.generateResponse(HttpStatus.OK, HttpStatus.OK.toString(),String.format("%s was successfully authed",authentication.getName()));
+        return "successfully authed";
     }
+
+//    @PostMapping("/token")
+//    public String token(@RequestBody LoginRequest loginRequest){
+//        authenticationManager.authenticate(reqToAuth.apply(loginRequest));
+//        return "successfully authed";
+//    }
+//
+//    @PostMapping()
+//    public String token(@RequestBody LoginRequest loginRequest){
+//        authenticationManager.authenticate(reqToAuth.apply(loginRequest));
+//        return "successfully authed";
+//    }
 
 }

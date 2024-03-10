@@ -1,6 +1,7 @@
 package org.aston.ems.admin_service.mapper;
 
-import org.aston.ems.admin_service.dto.UserDto;
+import org.aston.ems.admin_service.dto.UserReqDto;
+import org.aston.ems.admin_service.dto.UserResDto;
 import org.aston.ems.admin_service.model.Authority;
 import org.aston.ems.admin_service.model.User;
 import org.mapstruct.Mapper;
@@ -14,15 +15,23 @@ import java.util.Collection;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(source = "username", target = "login")
-    @Mapping(source = "password",target = "password")
+    @Mapping(source = "username", target = "name")
     @Mapping(source = "authorities",target = "authorities", qualifiedByName = "mapAuthoritiesToArray")
-    UserDto toDto(User user);
+    UserResDto toResDto(User user);
+
+    @Mapping(source = "username", target = "login")
+    @Mapping(source = "password", target = "password")
+    @Mapping(source = "authorities",target = "authorities", qualifiedByName = "mapAuthoritiesToArray")
+    UserReqDto toReqDto(User user);
+
+    @Mapping(source = "name", target = "username")
+    @Mapping(source = "authorities",target = "authorities", qualifiedByName = "mapArrayToAuthorities")
+    User fromResDto(UserResDto dto);
 
     @Mapping(source = "login", target = "username")
-    @Mapping(source = "password",target = "password")
+    @Mapping(source = "password", target = "password")
     @Mapping(source = "authorities",target = "authorities", qualifiedByName = "mapArrayToAuthorities")
-    User fromDto(UserDto dto);
+    User fromReqDto(UserReqDto dto);
 
     @Named("mapAuthoritiesToArray")
     default String[] mapAuthoritiesToArray(Collection<Authority> authorities) {

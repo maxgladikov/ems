@@ -5,7 +5,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.aston.ems.admin_service.security.EncryptionAlgorithm;
 import org.aston.ems.admin_service.security.SecurityUser;
 import org.hibernate.annotations.CreationTimestamp;
@@ -26,8 +28,7 @@ import lombok.Setter;
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
@@ -40,7 +41,7 @@ public class User implements Serializable {
 	@Id
 	@SequenceGenerator(name = "user_seq",
 			sequenceName = "user_seq",
-			initialValue = 1, allocationSize = 3)
+			initialValue = 1, allocationSize = 10)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
 	@Column(name = "id", nullable = false)
 	private Long id;
@@ -86,6 +87,7 @@ public class User implements Serializable {
 	public int hashCode() {
 		return 31*username.hashCode()+password.hashCode();
 	}
+
 
 
 }

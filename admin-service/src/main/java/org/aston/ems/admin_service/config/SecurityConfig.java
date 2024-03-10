@@ -41,13 +41,15 @@ public class SecurityConfig {
         http
 				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(authorize -> authorize
-					.requestMatchers("/api/v1/auth/**").permitAll()
-					.requestMatchers(HttpMethod.POST,"/api/v1/admin/**").hasAnyAuthority("ADMIN")
-				.anyRequest().permitAll()
+					.requestMatchers("/api/v1/admin/auth/**").permitAll()
+					.requestMatchers(HttpMethod.POST,"/api/v1/admin/users/**").hasAnyAuthority("ADMIN")
+					.requestMatchers(HttpMethod.DELETE,"/api/v1/admin/users/**").hasAnyAuthority("ADMIN")
+					.requestMatchers(HttpMethod.PUT,"/api/v1/admin/users/**").hasAnyAuthority("ADMIN")
+				.anyRequest().authenticated()
 		)
 				.exceptionHandling((exception)-> exception.authenticationEntryPoint(authEntryPoint))
 				.httpBasic(withDefaults());
-		http.addFilterAfter(new AuthenticationLoggingFilter(), BasicAuthenticationFilter.class);
+//		http.addFilterAfter(new AuthenticationLoggingFilter(), BasicAuthenticationFilter.class);
         return http.build();
     }
 

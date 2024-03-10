@@ -1,12 +1,17 @@
 package org.aston.ems.admin_service.service;
 
 import lombok.RequiredArgsConstructor;
+import org.aston.ems.admin_service.repository.AuthorityRepository;
 import org.aston.ems.admin_service.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
@@ -19,21 +24,18 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest(classes = UserDetailsServiceImpl.class)
-@RequiredArgsConstructor
 class EmsUserDetailsServiceTest {
-
-    private final UserDetailsServiceImpl service;
-
-    @MockBean
-    private UserRepository repository;
+    @Mock
+    private  UserRepository userRepository;
+    @InjectMocks
+    private  UserDetailsServiceImpl service;
 
     @Test
     void shouldReturnUser() {
         String givenName = "test";
 
-        when(repository.findByUsername(givenName)).thenReturn(Optional.of(USER));
+        when(userRepository.findByUsername(givenName)).thenReturn(Optional.of(USER));
         assertEquals(USER_DETAILS,service.loadUserByUsername(givenName));
-        verify(repository,times(1)).findByUsername(givenName);
+        verify(userRepository,times(1)).findByUsername(givenName);
     }
 }

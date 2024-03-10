@@ -1,6 +1,6 @@
 spring:
   application:
-    name: admin_service_test
+    name: admin-service_test
   liquibase:
     enabled: true
     change-log: classpath:liquibase/changelog-master.yml

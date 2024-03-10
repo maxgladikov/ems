@@ -1,8 +1,6 @@
 package org.aston.ems.admin_service.service;
 
-import org.aston.ems.admin_service.dto.UserDto;
 import org.aston.ems.admin_service.model.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
