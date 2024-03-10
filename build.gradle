@@ -4,6 +4,7 @@ buildscript {
 		springCloudVersion = "2023.0.0"
 		jacocoVersion = "0.8.7"
 		profiles = 'dev'
+//		springVersion = dependencyManagement.importedProperties['spring-framework.version']
 	}
 }
 
@@ -38,7 +39,6 @@ dependencyManagement {
 
 
 version = '0.0.1'
-
 def springProjects=[project(':student-service'), project(':teacher-service'), project(':user-service'),project(':admin-service'),project(':gateway-service'),project(':discovery-service')]
 def libraryProjects=[project(':common-lib')]
 

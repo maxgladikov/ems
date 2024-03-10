@@ -19,9 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static org.aston.ems.admin_service.TestFactory.USER_REQ_DTO;
-import static org.aston.ems.admin_service.TestFactory.USER_REQ_NEW_DTO;
-import static org.aston.ems.admin_service.TestFactory.USER_RES_DTO;
+import static org.aston.ems.admin_service.TestFactory.*;
 import static org.aston.ems.admin_service.util.JsonUtils.asJsonString;
 import static org.aston.ems.admin_service.util.JsonUtils.jsonToList;
 import static org.aston.ems.admin_service.util.JsonUtils.jsonToObject;
