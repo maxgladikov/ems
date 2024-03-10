@@ -29,8 +29,6 @@ public class DataInitializer implements ApplicationRunner {
 
     private static final List<String> NICKNAMES = List.of("Ivan Ivanov", "Fedor Fedorov", "Oleg Olegov");
 
-    private static final String STUDENT_ROLE = "STUDENT";
-
     private final StudentRepository studentRepository;
 
     private final TaskRepository taskRepository;
@@ -39,11 +37,8 @@ public class DataInitializer implements ApplicationRunner {
 
     private final TaskMapper taskMapper;
 
-    private final ObjectMapper objectMapper;
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        getStudents();
         addDefaultStudents();
         addDefaultTask10();
         addDefaultTask11();
@@ -52,15 +47,11 @@ public class DataInitializer implements ApplicationRunner {
 
     public void addDefaultStudents() {
         for (var nickname: NICKNAMES) {
-            addStudent(nickname);
+            var studentCreateDTO = new StudentCreateDTO();
+            studentCreateDTO.setNickname(nickname);
+            var student = studentMapper.map(studentCreateDTO);
+            studentRepository.save(student);
         }
-    }
-
-    public void addStudent(String nickname) {
-        var studentCreateDTO = new StudentCreateDTO();
-        studentCreateDTO.setNickname(nickname);
-        var student = studentMapper.map(studentCreateDTO);
-        studentRepository.save(student);
     }
 
     public void addDefaultTask10() {
@@ -120,18 +111,5 @@ public class DataInitializer implements ApplicationRunner {
         taskUpdateDTO.setMark(JsonNullable.of(Score.TWO));
         taskMapper.update(taskUpdateDTO, task);
         taskRepository.save(task);
-    }
-
-    public void getStudents() throws IOException {
-        RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = "http://localhost:9000/api/v1/admin/internal/users";
-        String response = restTemplate.getForObject(resourceUrl, String.class);
-
-        List<UserDTO> users = objectMapper.readValue(response, new TypeReference<List<UserDTO>>() {});
-        for (var user: users) {
-            if (user.getAuthorities().get(0).equals(STUDENT_ROLE)) {
-                addStudent(user.getName());
-            }
-        }
     }
 }

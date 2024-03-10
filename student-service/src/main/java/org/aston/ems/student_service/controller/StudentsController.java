@@ -1,5 +1,8 @@
 package org.aston.ems.student_service.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,10 +15,12 @@ import lombok.AllArgsConstructor;
 import org.aston.ems.student_service.dto.StudentCreateDTO;
 import org.aston.ems.student_service.dto.StudentDTO;
 import org.aston.ems.student_service.dto.StudentProgressDataDTO;
+import org.aston.ems.student_service.dto.UserDTO;
 import org.aston.ems.student_service.service.StudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -28,6 +33,7 @@ public class StudentsController {
     public static final String ID = "/{id}";
 
     private final StudentService studentService;
+
 
     @Operation(summary = "Get specific student by his id")
     @ApiResponses(value = {
@@ -64,6 +70,12 @@ public class StudentsController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<StudentDTO>> index() {
+        try {
+            studentService.download();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
         var students = studentService.getAll();
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(students.size()))
