@@ -44,10 +44,10 @@ public class AuthController {
 //        return "successfully authed";
 //    }
 //
-//    @PostMapping()
-//    public String token(@RequestBody LoginRequest loginRequest){
-//        authenticationManager.authenticate(reqToAuth.apply(loginRequest));
-//        return "successfully authed";
-//    }
+    @PostMapping()
+    public String token(@RequestBody LoginRequest loginRequest){
+        authenticationManager.authenticate(reqToAuth.apply(loginRequest));
+        return "successfully authed";
+    }
 
 }

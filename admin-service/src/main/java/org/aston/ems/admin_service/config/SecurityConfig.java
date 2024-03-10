@@ -22,8 +22,13 @@ import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @EnableWebSecurity
@@ -39,7 +44,15 @@ public class SecurityConfig {
 	@Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-				.csrf(csrf -> csrf.disable())
+				.csrf(AbstractHttpConfigurer::disable)
+				.cors(cors -> cors.configurationSource(request -> {
+					var corsConfiguration = new CorsConfiguration();
+					corsConfiguration.setAllowedOriginPatterns(List.of("*"));
+					corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+					corsConfiguration.setAllowedHeaders(List.of("*"));
+					corsConfiguration.setAllowCredentials(true);
+					return corsConfiguration;
+				}))
 				.authorizeHttpRequests(authorize -> authorize
 					.requestMatchers("/api/v1/admin/auth/**").permitAll()
 					.requestMatchers(HttpMethod.POST,"/api/v1/admin/users/**").hasAnyAuthority("ADMIN")
@@ -47,6 +60,7 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.PUT,"/api/v1/admin/users/**").hasAnyAuthority("ADMIN")
 				.anyRequest().authenticated()
 		)
+				.sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
 				.exceptionHandling((exception)-> exception.authenticationEntryPoint(authEntryPoint))
 				.httpBasic(withDefaults());
 //		http.addFilterAfter(new AuthenticationLoggingFilter(), BasicAuthenticationFilter.class);
