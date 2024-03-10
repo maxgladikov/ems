@@ -10,9 +10,9 @@ ext {
 		mapstructVersion = "1.5.5.Final"
 		lombokVersion = "1.18.28"
 		jUnitVersion='5.10.2'
-		springVersion = dependencyManagement.importedProperties['spring-framework.version']
-
+//		springVersion = dependencyManagement.importedProperties['spring-framework.version']
 	}
+dependencyManagement.importedProperties['spring-framework.version']
 
 dependencyManagement {
 	imports {
@@ -22,7 +22,6 @@ dependencyManagement {
 
 
 version = '0.0.1'
-
 def springProjects=[project(':student-service'), project(':teacher-service'), project(':user-service'),project(':admin-service'),project(':gateway-service'),project(':discovery-service')]
 def libraryProjects=[project(':common-lib')]
 
@@ -40,16 +39,13 @@ allprojects {
 	java.targetCompatibility(JavaVersion.VERSION_17)
 	compileJava.options.encoding = 'UTF-8'
 
-
 	tasks.withType(JavaCompile) {
 		options.encoding='UTF-8'
 	}
-	
 	repositories {
         mavenCentral()
         mavenLocal()
     }
-
 }
 
 configure(springProjects){
@@ -58,24 +54,14 @@ configure(springProjects){
 	apply plugin: 'io.spring.dependency-management'
 	apply plugin: 'com.google.cloud.tools.jib'
 
-
-	
-
 	dependencies {
 		  implementation 'org.springframework.boot:spring-boot-configuration-processor'
 		  implementation 'org.springframework.boot:spring-boot-starter-actuator'
 		  compileOnly 'org.projectlombok:lombok'
 		  annotationProcessor 'org.projectlombok:lombok'
-  		  testImplementation ('org.springframework.boot:spring-boot-starter-test'){
-  		  	exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-  		  	}
+  		  testImplementation 'org.springframework.boot:spring-boot-starter-test'
   		  implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-//		implementation "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
-
-
-
-
 
 	bootJar.enabled = true
 	bootBuildImage.imageName=rootProject.name+'-'+project.name
@@ -84,6 +70,8 @@ configure(springProjects){
 		compileOnly.extendsFrom annotationProcessor
 		testCompileOnly.extendsFrom annotationProcessor
 		testAnnotationProcessor.extendsFrom annotationProcessor
+		intTestImplementation.extendsFrom testImplementation
+		intTestRuntimeOnly.extendsFrom runtimeOnly
 	}
 	
 	tasks.named('test', Test) {
@@ -100,10 +88,7 @@ configure(springProjects){
 			  runtimeClasspath += sourceSets.main.output
 		  }
 	  }
-	  configurations {
-		  intTestImplementation.extendsFrom testImplementation
-		  intTestRuntimeOnly.extendsFrom runtimeOnly
-	  }
+
 	  tasks.register('integrationTest', Test) {
 		  description = 'Runs integration tests.'
 		  group = 'verification'
