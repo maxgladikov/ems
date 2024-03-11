@@ -1,0 +1,210 @@
+openapi: 3.0.0
+info:
+  title: Микросервис Учитель
+  contact:
+    email: dubrovinaa389@gmail.com
+  license:
+    name: TeacherMicroservice
+    url: http://{host}:{port}
+  version: 1.0.1
+  
+servers:
+  - url: http://{host}:{port}
+    description: custom server
+    variables:
+      host:
+        description: host name
+        default: localhost
+      port:
+        description: port value
+        default: "9002"
+        
+tags:
+  - name: "Учитель"
+    description: "Информация о заданиях для ученика"
+  - name: "Создание учителя"  
+    description: "Создание учтеля вручную"
+    
+paths:
+  /api/v1/teacher:
+    post:
+      tags:
+        - "Учитель"
+      summary: "Создание задания для ученика"
+      requestBody:
+        $ref: "#/components/requestBodies/CreateTask"
+      responses:
+        '201':
+          description: "Задание создано"
+        '400':
+          $ref: '#/components/responses/Bad_Request'
+        '500':
+          $ref: '#/components/responses/Internal_Server_Error'
+          
+  /api/v1/teacher/tasks/{teachers_name}:
+    get:
+      tags:
+       - "Учитель"
+      summary: "Получение информации о всех заданиях учителя" 
+      parameters:
+        - in: path
+          name: teachers_name
+          description: "Имя учителя"
+          required: true
+          schema:
+            type: string
+      responses:  
+        '200':
+          description: "OK"
+        '400':
+          $ref: '#/components/responses/Bad_Request'
+        '500':
+          $ref: '#/components/responses/Internal_Server_Error'  
+          
+  /api/v1/teacher/create:      
+    post:
+      tags:
+       - "Создание учителя"
+      summary: "Создание учителя" 
+      requestBody:
+        $ref: "#/components/requestBodies/CreateTeacher"
+      responses:  
+        '201':
+          description: "ОК"
+        '400':
+          $ref: '#/components/responses/Bad_Request'
+        '500':
+          $ref: '#/components/responses/Internal_Server_Error'  
+    
+components:
+  requestBodies:
+    CreateTask:
+      description: Тело для создания задания
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TaskCreate'
+      
+    CreateTeacher:
+      description: Тело для создания учителя
+      required: true
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TeacherCreate'
+        
+          
+
+  responses:
+    Bad_Request:
+      description: Запрос некорректен. Сервер не может обработать запрос
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - type: array
+                items:
+                  $ref: '#/components/schemas/t_error_response'
+              - $ref: '#/components/schemas/t_structured_error_response'
+          examples:
+            t_error_response:
+              value:
+                - logref: error
+                  message:  Запрос содержит некорректные данные. Измените запрос и отправьте его ещё раз
+            t_structured_error_response:
+              value:
+                logref: structured_error
+                errors:
+                  - field: time_unit
+                    message: Поле должно быть положительным числом
+    Unauthorized:
+      description: Для выполнения запроса на данный адрес требуется передать токен авторизации
+    Forbidden:
+      description: Данному токену авторизации запрещено выполнять запроса на данный адрес
+    Internal_Server_Error:
+      description: Внутренняя ошибка сервера. Сервер не смог корректно обработать запрос
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/t_error_response'
+          example:
+            - logref: error
+              message:  Сервер не смог корректно обработать запрос. Пожалуйста обратитесь к администратору
+  schemas:
+    TaskCreate:
+      type: object
+      description: "Создание задания"
+      properties:
+        nickname:
+          type: string
+          description: "Имя ученика"
+        teacherName:
+          type: string
+          description: "Имя учителя"
+        content: 
+          type: string
+          description: "Задание для ученика" 
+      
+    TeacherCreate:
+      type: object
+      description: "Создание учителя"
+      properties:
+        name:
+          type: string
+          description: "Имя учителя"
+        role: 
+          type: string
+          description: "роль Учитель" 
+      
+       
+        
+    t_error_response:
+      type: object
+      description: Ошибка. Содержит общее описание ошибки
+      required:
+        - logref
+        - message
+      properties:
+        logref:
+          type: string
+          description: |
+            Тип ошибки (предназначено для машинной обработки):
+              * `error` - Признак что ошибка не привязана к полю
+          enum:
+            - "error"
+        message:
+          description: Сообщение ошибки
+          type: string
+          example: Запрос содержит некорректные данные. Измените запрос и отправьте его ещё раз
+
+    t_structured_error_response:
+      type: object
+      description: Ошибка. Содержит описание ошибок со ссылками на поля сущности
+      required:
+        - logref
+        - errors
+      properties:
+        logref:
+          type: string
+          description: |
+            Тип ошибки (предназначено для машинной обработки):
+              * `structured_error` - Признак что ошибка привязана к полю
+          enum:
+            - "structured_error"
+        errors:
+          description: Наименование ошибочного поля
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Сообщение об ошибке
+                example: Поле должно быть положительным числом
+              field:
+                type: string
+                description: Наименование ошибочного поля
+                example: time_unit          
