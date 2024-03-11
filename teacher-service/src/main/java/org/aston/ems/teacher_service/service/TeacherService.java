@@ -3,6 +3,8 @@ package org.aston.ems.teacher_service.service;
 import org.aston.ems.teacher_service.core.TeacherDto;
 import org.aston.ems.teacher_service.dao.api.ITeacherMapper;
 import org.aston.ems.teacher_service.dao.api.ITeacherRepository;
+import org.aston.ems.teacher_service.dao.model.Teacher;
+import org.aston.ems.teacher_service.dao.util.Role;
 import org.aston.ems.teacher_service.service.api.ITeacherService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,7 +25,13 @@ public class TeacherService implements ITeacherService {
 
     @Override
     public void createTeacher(TeacherDto teacherDto) {
-        repository.save(teacherMapper.toEntity(teacherDto));
+        Teacher entity = teacherMapper.toEntity(teacherDto);
+        entity.setAuthorities(Role.TEACHER);
+        repository.save(entity);
+    }
+
+    public void getByName(String name) {
+        repository.findByName(name);
     }
 
 //

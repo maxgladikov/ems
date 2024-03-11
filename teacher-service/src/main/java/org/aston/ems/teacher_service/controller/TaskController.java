@@ -26,7 +26,7 @@ public class TaskController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@GetMapping("/{teacherId}")
+	@GetMapping("/{teacherName}")
 	public ResponseEntity<List<TaskDto>> getAllTeachersTasks(@PathVariable String teacherName) {
 		List<TaskDto> tasks = taskService.getAllTeachersTasks(teacherName);
 		return new ResponseEntity<> (tasks, HttpStatus.OK);
@@ -42,11 +42,5 @@ public class TaskController {
 	public ResponseEntity<?> update(@RequestBody TaskDto taskDto) {
 		taskService.updateMark(taskDto.getId(), taskDto.getMark());
 		return ResponseEntity.status(HttpStatus.OK).build();
-	}
-
-	@DeleteMapping("/{taskId}")
-	public ResponseEntity<?> delete(@PathVariable Long taskId) {
-		taskService.delete(taskId);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }

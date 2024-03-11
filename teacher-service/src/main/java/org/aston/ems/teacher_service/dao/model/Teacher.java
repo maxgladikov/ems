@@ -20,6 +20,6 @@ public class Teacher extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role authorities;
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "teacher")
     private List<Task> tasks;
 }

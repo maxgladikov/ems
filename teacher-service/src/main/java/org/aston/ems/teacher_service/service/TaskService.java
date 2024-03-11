@@ -6,7 +6,6 @@ import org.aston.ems.teacher_service.core.TaskDtoUpdate;
 import org.aston.ems.teacher_service.core.TaskDto;
 import org.aston.ems.teacher_service.dao.api.ITaskMapper;
 import org.aston.ems.teacher_service.dao.api.ITaskRepository;
-import org.aston.ems.teacher_service.dao.api.ITeacherMapper;
 import org.aston.ems.teacher_service.dao.api.ITeacherRepository;
 import org.aston.ems.teacher_service.dao.model.Task;
 import org.aston.ems.teacher_service.dao.model.Teacher;
@@ -35,6 +34,8 @@ public class TaskService implements ITaskService {
 
     public void save(TaskDto taskDto) {
         Task entity = taskMapper.toEntity(taskDto);
+        Teacher teacher = teacherRepository.findByName(taskDto.getTeacherName());
+        entity.setTeacher(teacher);
         Task savedTask = taskRepository.save(entity);
 
         RequestTaskDtoCreate requestTaskDto = new RequestTaskDtoCreate(savedTask.getId(),
@@ -47,10 +48,6 @@ public class TaskService implements ITaskService {
         Teacher teacher = teacherRepository.findByName(teacherName);
         List<Task> teachersTasks = taskRepository.getAllByTeacher(teacher);
         return toDTOList(teachersTasks);
-    }
-
-    public void delete(Long id) {
-        taskRepository.deleteById(id);
     }
 
     public void updateMark(Long id, int mark) {
@@ -75,10 +72,10 @@ public class TaskService implements ITaskService {
         }
     }
 
-
     private List<TaskDto> toDTOList(List<Task> tasks) {
         return tasks.stream()
                 .map(taskMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
 }
