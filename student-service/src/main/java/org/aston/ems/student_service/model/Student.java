@@ -24,7 +24,8 @@ public class Student implements BaseEntity {
 
     @Id
     @EqualsAndHashCode.Include
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = IDENTITY, generator = "sequence_generator")
+    @SequenceGenerator(name = "sequence_generator", sequenceName = "seq_student_id", initialValue = 1, allocationSize = 1)
     private Long id;
 
     @Column(unique = true)
