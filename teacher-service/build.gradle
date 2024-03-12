@@ -10,7 +10,10 @@
         implementation 'org.springframework.boot:spring-boot-starter-web'
         implementation project(':common-lib')
         implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-	}
+            implementation 'org.springframework.kafka:spring-kafka:2.7.1'
+            implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    }
 	
 	
 

@@ -1,5 +1,6 @@
 package org.aston.ems.teacher_service.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.aston.ems.teacher_service.core.TaskDtoUpdate;
 import org.aston.ems.teacher_service.core.TaskDto;
 import org.aston.ems.teacher_service.service.api.ITaskService;
@@ -40,7 +41,11 @@ public class TaskController {
 
 	@PutMapping
 	public ResponseEntity<?> update(@RequestBody TaskDto taskDto) {
-		taskService.updateMark(taskDto.getId(), taskDto.getMark());
+		try {
+			taskService.updateMark(taskDto.getId(), taskDto.getMark());
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 }

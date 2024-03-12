@@ -1,5 +1,6 @@
 package org.aston.ems.student_service.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.aston.ems.student_service.dto.TaskCreateDTO;
 import org.aston.ems.student_service.dto.TaskDTO;
@@ -8,14 +9,19 @@ import org.aston.ems.student_service.exception.ResourceNotFoundException;
 import org.aston.ems.student_service.mapper.TaskMapper;
 import org.aston.ems.student_service.repository.StudentRepository;
 import org.aston.ems.student_service.repository.TaskRepository;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @AllArgsConstructor
 public class TaskService {
-
+    private final KafkaTemplate kafkaTemplate;
+    private final ObjectMapper objectMapper;
     private final TaskRepository taskRepository;
 
     private final StudentRepository studentRepository;
@@ -49,6 +55,7 @@ public class TaskService {
         return taskMapper.map(task);
     }
 
+    @KafkaListener(topics = "mark", containerFactory = "kafkaListenerContainerFactory")
     public TaskDTO update(TaskUpdateDTO taskData) {
         var taskId = taskData.getId();
         var task = taskRepository.findById(taskId)

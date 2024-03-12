@@ -1,5 +1,7 @@
 package org.aston.ems.teacher_service.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aston.ems.teacher_service.client.api.IStudentClient;
 import org.aston.ems.teacher_service.core.RequestTaskDtoCreate;
 import org.aston.ems.teacher_service.core.TaskDtoUpdate;
@@ -11,6 +13,7 @@ import org.aston.ems.teacher_service.dao.model.Task;
 import org.aston.ems.teacher_service.dao.model.Teacher;
 import org.aston.ems.teacher_service.service.api.ITaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,17 +22,21 @@ import java.util.stream.Collectors;
 
 @Service
 public class TaskService implements ITaskService {
+    private final ObjectMapper objectMapper;
     private final ITaskRepository taskRepository;
     private final ITeacherRepository teacherRepository;
     private final ITaskMapper taskMapper;
     private final IStudentClient studentClient;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
-    public TaskService(ITaskRepository taskRepository, ITeacherRepository teacherRepository, ITaskMapper taskMapper, IStudentClient studentClient) {
+    public TaskService(ObjectMapper objectMapper, ITaskRepository taskRepository, ITeacherRepository teacherRepository, ITaskMapper taskMapper, IStudentClient studentClient, KafkaTemplate<String, String> kafkaTemplate) {
+        this.objectMapper = objectMapper;
         this.taskRepository = taskRepository;
         this.teacherRepository = teacherRepository;
         this.taskMapper = taskMapper;
         this.studentClient = studentClient;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     public void save(TaskDto taskDto) {
@@ -50,15 +57,16 @@ public class TaskService implements ITaskService {
         return toDTOList(teachersTasks);
     }
 
-    public void updateMark(Long id, int mark) {
+    public void updateMark(Long id, int mark) throws JsonProcessingException {
         Task task = taskRepository.getReferenceById(id);
+        TaskDtoUpdate updateTask = new TaskDtoUpdate(task.getId(),
+                task.getNickname(), task.getMark());
+        String json = objectMapper.writeValueAsString(updateTask);
+
+        kafkaTemplate.send("mark", json).completable();
         task.setMark(mark);
         task.setChecked(true);
         taskRepository.save(task);
-
-        TaskDtoUpdate updateTask = new TaskDtoUpdate(task.getId(),
-                task.getNickname(), task.getMark());
-        studentClient.sendMark(task.getId(), updateTask);
     }
 
     public void updateAnswer(Long id, String nickName, String answer) {
